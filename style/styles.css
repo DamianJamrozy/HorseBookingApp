@@ -1,0 +1,182 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: whitesmoke;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.banner {
+    background-color: green;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.logo-container {
+    flex: 0 0 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.logo {
+    width: 100px;
+    height: 100px;
+    border: 2px solid yellowgreen;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+}
+
+.welcome-text {
+    flex: 1;
+    font-size: 1.2em;
+    text-align: center;
+    font-size: 30px;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.login-form {
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.login-form h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-form input,
+.login-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-form button {
+    width: 105%;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+footer {
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    flex-shrink: 0;
+}
+.sidebar {
+    flex: 0 0 200px;
+    /* Szerokość sidebaru */
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: calc(100vh - 160px);
+    /* Wysokość od góry do stopki (100px na baner + 60px na stopkę) */
+    overflow-y: auto;
+    /* Dodatkowe przewijanie, jeśli zawartość jest dłuższa */
+    
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    margin-left: 10px;
+    
+}
+.icon {
+    width: 50px;
+    /* Rozmiar ikony */
+    height: 50px;
+    margin-right: 10px;
+    /* Margines po ikonie */
+}
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    /* Przewijanie dla zawartości, jeśli jest dłuższa */
+}
+
+.logout {
+    margin-right: 20px;
+}
+
+.logout img {
+    width: 80px;
+    /* Dostosowanie szerokości obrazu wylogowania */
+    cursor: pointer;
+    /* Zmiana kursora na wskaźnik */
+}
+
+.button-add {
+    margin-top: 20px;
+    display: block;
+}
+
+#add-trainer-form {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    clear: both;
+}
+
+#add-trainer-form label {
+    display: block;
+    margin-top: 10px;
+}
+
+#add-trainer-form input,
+#add-trainer-form select {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+

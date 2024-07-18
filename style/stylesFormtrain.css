@@ -1,0 +1,80 @@
+/*styl dla form dodanie trenera */
+
+/* Resetowanie styli dla formularza */
+form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Stylowanie kontenera formularza */
+#add-trainer-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Stylowanie nagłówka formularza */
+#add-trainer-form h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* Stylowanie grupy pól formularza */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Stylowanie etykiet pól formularza */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Stylowanie pól wejściowych */
+.form-control {
+    width: calc(100% - 20px);
+    /* uwzględnienie paddingu */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Stylowanie przycisku Zapisz */
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Dodatkowy styl dla select */
+.form-control-select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Stylowanie komunikatu sukcesu */
+.success-message {
+    color: #28a745;
+    font-weight: bold;
+    margin-top: 10px;
+}
