@@ -51,7 +51,7 @@ $conn->close();
 <body>
     <header class="banner">
         <div class="logo-container">
-            <img src="../figures/logo.jpg" alt="Logo" class="logo">
+            <p>Horse Riding Club</p>
         </div>
         <div class="welcome-text">Witaj: <?php echo $imie_nazwisko; ?></div>
         <div class="logout">
