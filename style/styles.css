@@ -287,3 +287,64 @@ footer {
   padding: 1rem;
   margin-top: 1rem;
 }
+
+
+/* Styled table */
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 2em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #1971c2;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #1971c2;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #1971c2;
+}
+
+.styled-table .user-image {
+    width: 50%;
+}
+
+.styled-table .edit-user-id,
+.styled-table .delete-user-id {
+    display: none;
+}
+
+.table-button {
+    padding: 2rem 2.4rem;
+    background-color: #1971c2;
+    color: #d8d8d8;
+    border: none;
+    border-radius: 10px;
+}
+
+.table-button:hover {
+    background-color: #228be6;
+    cursor: pointer;
+}

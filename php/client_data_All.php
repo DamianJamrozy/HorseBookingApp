@@ -111,7 +111,7 @@ $result = $conn->query($sql);
     <main>
         <div class="user-data">
             <h2>Wszyscy użytkownicy</h2>
-            <table class="users-table">
+            <table class="users-table styled-table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -155,17 +155,17 @@ $result = $conn->query($sql);
                                 echo '<select class="delete-user-id">';
                                 echo '<option value="' . htmlspecialchars($row['id']) . '">' . htmlspecialchars($row['imie']) . ' ' . htmlspecialchars($row['nazwisko']) . ' (ID: ' . htmlspecialchars($row['id']) . ')</option>';
                                 echo '</select>';
-                                echo '<button class="delete-user-button">Usuń</button>';
+                                echo '<button class="delete-user-button table-button">Usuń</button>';
                                 echo '</td>';
                                 echo '<td>';
                                 echo '<select class="edit-user-id" data-level="' . htmlspecialchars($row['stopien_jezdziecki']) . '">';
                                 echo '<option value="' . htmlspecialchars($row['id']) . '">' . htmlspecialchars($row['imie']) . ' ' . htmlspecialchars($row['nazwisko']) . ' (ID: ' . htmlspecialchars($row['id']) . ')</option>';
                                 echo '</select>';
-                                echo '<button class="edit-user-button">Edytuj</button>';
+                                echo '<button class="edit-user-button table-button">Edytuj</button>';
                                 echo '</td>';
                                 if ($_SESSION['user_role'] === 'administrator') {
                                     echo '<td>';
-                                    echo '<a href="add_user.php"><button class="add-button" data-id="' . htmlspecialchars($row['id']) . '">Dodaj</button></a>';
+                                    echo '<a href="add_user.php"><button class="add-button table-button" data-id="' . htmlspecialchars($row['id']) . '">Dodaj</button></a>';
                                     echo '</td>';
                                 }
                             } else {
@@ -195,8 +195,8 @@ $result = $conn->query($sql);
                     <option value="średniozaawansowany">średniozaawansowany</option>
                     <option value="zaawansowany">zaawansowany</option>
                 </select>
-                <button type="submit">Zapisz</button>
-                <button type="button" id="closeModal">Anuluj</button>
+                <button type="submit" class="table-button">Zapisz</button>
+                <button type="button" class="table-button" id="closeModal">Anuluj</button>
             </form>
         </div>
     </main>

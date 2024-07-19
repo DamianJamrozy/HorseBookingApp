@@ -15,22 +15,36 @@ $sql = "SELECT imie, nazwisko, email, ulica, nr_domu, kod_pocztowy, miasto, tele
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-
     echo '<div class="client-data">
             <h2>Dane Klienta</h2>
-            <table class="client-table">
-                <tr><th>Imię:</th><td>' . htmlspecialchars($row['imie']) . '</td></tr>
-                <tr><th>Nazwisko:</th><td>' . htmlspecialchars($row['nazwisko']) . '</td></tr>
-                <tr><th>Email:</th><td>' . htmlspecialchars($row['email']) . '</td></tr>
-                <tr><th>Ulica:</th><td>' . htmlspecialchars($row['ulica']) . ' ' . htmlspecialchars($row['nr_domu']) . '</td></tr>
-                <tr><th>Kod pocztowy:</th><td>' . htmlspecialchars($row['kod_pocztowy']) . '</td></tr>
-                <tr><th>Miasto:</th><td>' . htmlspecialchars($row['miasto']) . '</td></tr>
-                <tr><th>Telefon:</th><td>' . htmlspecialchars($row['telefon']) . '</td></tr>
-                <tr><th>Stopień jeździecki:</th><td>' . htmlspecialchars($row['stopien_jezdziecki']) . '</td></tr>
-                <tr><th>Zdjęcie:</th><td><img src="../' . htmlspecialchars($row['zdjecie']) . '" alt="Zdjęcie użytkownika" style="max-width: 100px; height: auto;"></td></tr>
-            </table>
-          </div>';
+            <table class="trainers-table styled-table">
+                <thead>
+                    <tr>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>Email</th>
+                        <th>Ulica</th>
+                        <th>Kod pocztowy</th>
+                        <th>Miasto</th>
+                        <th>Telefon</th>
+                        <th>Stopień jeździecki</th>
+                        <th>Zdjęcie</th>
+                    </tr>
+                </thead>
+                <tbody>';
+    while ($row = $result->fetch_assoc()) {
+
+    echo '<tr><td>' . htmlspecialchars($row['imie']) . '</td>
+               <td>' . htmlspecialchars($row['nazwisko']) . '</td>
+                <td>' . htmlspecialchars($row['email']) . '</td>
+               <td>' . htmlspecialchars($row['ulica']) . ' ' . htmlspecialchars($row['nr_domu']) . '</td>
+                <td>' . htmlspecialchars($row['kod_pocztowy']) . '</td>
+                <td>' . htmlspecialchars($row['miasto']) . '</td>
+                <td>' . htmlspecialchars($row['telefon']) . '</td>
+                <td>' . htmlspecialchars($row['stopien_jezdziecki']) . '</td>
+                <td><img src="../' . htmlspecialchars($row['zdjecie']) . '" alt="Zdjęcie użytkownika" style="max-width: 100px; height: auto;"></td></tr>';
+    }
+    echo '</tbody></table></div>';
 } else {
     echo "Brak danych użytkownika.";
 }

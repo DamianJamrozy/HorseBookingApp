@@ -56,7 +56,7 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     echo '<div class="trainers-data">';
     echo '<h2>Trenerzy</h2>';
-    echo '<table class="trainers-table">
+    echo '<table class="trainers-table styled-table">
             <thead>
                 <tr>
                     <th>Zdjęcie</th>
@@ -74,12 +74,12 @@ if ($result->num_rows > 0) {
                 <td>' . htmlspecialchars($row['imie']) . '</td>
                 <td>' . htmlspecialchars($row['nazwisko']) . '</td>
                 <td>' . htmlspecialchars($row['stopien_jezdziecki']) . '</td>
-                <td><button class="edit-button" data-id="' . htmlspecialchars($row['id']) . '">Edytuj</button></td>
-                <td><button class="delete-button" data-id="' . htmlspecialchars($row['id']) . '">Usuń</button></td>
+                <td><button class="edit-button table-button" data-id="' . htmlspecialchars($row['id']) . '">Edytuj</button></td>
+                <td><button class="delete-button table-button" data-id="' . htmlspecialchars($row['id']) . '">Usuń</button></td>
               </tr>';
     }
     echo '</tbody></table>';
-    echo '<button id="add-trainer-button" class="button-add">Dodaj trenera</button>'; // Przycisk Dodaj trenera
+    echo '<button id="add-trainer-button" class="button-add table-button">Dodaj trenera</button>'; // Przycisk Dodaj trenera
     echo '</div>';
 } else {
     echo "Brak danych o trenerach.";
@@ -261,7 +261,7 @@ $conn->close();
                 <option value="początkujący">Początkujący</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-        <button type="button" id="closeModal" class="btn btn-secondary">Anuluj</button>
+        <button type="submit" class="table-button">Zapisz zmiany</button>
+        <button type="button" id="closeModal" class="btn btn-secondary table-button">Anuluj</button>
     </form>
 </div>

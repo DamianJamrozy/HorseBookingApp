@@ -13,7 +13,7 @@ $result = $conn->query($query);
 
 if ($result->num_rows > 0) {
     echo "<h2>Lista koni:</h2>";
-    echo "<table>";
+    echo "<table class=' styled-table'><thead>";
     echo "<tr>
             <th>Imię</th>
             <th>Wiek</th>
@@ -24,9 +24,9 @@ if ($result->num_rows > 0) {
             <th>Zdjęcie</th>
             <th>Edytuj</th> 
             <th>Usuń</th> 
-          </tr>";
+          </tr></thead>";
     while ($row = $result->fetch_assoc()) {
-        echo "<tr>
+        echo "<tbody><tr>
                 <td>{$row['imie']}</td>
                 <td>{$row['wiek']}</td>
                 <td>{$row['rasa']}</td>
@@ -34,9 +34,9 @@ if ($result->num_rows > 0) {
                 <td>{$row['rodzaj_konia']}</td>
                 <td>{$row['opis']}</td>
                 <td><img src='../{$row['zdjecie']}' alt='{$row['imie']}' width='100'></td>
-                <td><button class='edit-button' data-id='{$row['id']}'>Edytuj</button></td>
-                <td><button class='delete-button' data-id='{$row['id']}'>Usuń</button></td>           
-              </tr>";
+                <td><button class='edit-button table-button' data-id='{$row['id']}'>Edytuj</button></td>
+                <td><button class='delete-button table-button' data-id='{$row['id']}'>Usuń</button></td>           
+              </tr></tbody>";
     }
     echo "</table>";
 } else {

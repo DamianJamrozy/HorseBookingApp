@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="opis">Opis:</label>
             <textarea id="opis" name="opis" autocomplete="description"><?php echo htmlspecialchars($horse['opis']); ?></textarea>
             <br>
-            <button type="submit">Zapisz zmiany</button>
+            <button type="submit" class="table-button">Zapisz zmiany</button>
         </form>
         <?php
     } else {

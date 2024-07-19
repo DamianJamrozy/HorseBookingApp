@@ -11,7 +11,7 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     echo '<div class="trainers-data">
             <h2>Trenerzy</h2>
-            <table class="trainers-table">
+            <table class="trainers-table styled-table">
                 <thead>
                     <tr>
                         <th>Zdjęcie</th>
