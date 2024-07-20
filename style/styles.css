@@ -348,3 +348,7 @@ footer {
     background-color: #228be6;
     cursor: pointer;
 }
+
+.menu-item {
+    cursor: pointer;
+}
