@@ -1,12 +1,39 @@
 <?php
-// Przykładowe dane dla kafelków
-$tiles = array(
-    //array("img" => "../figures/home.png", "text" => "Pulpit", "content" => "?"),
-    array("img" => "../figures/trener.png", "text" => "Trenerzy", "content" => "download_trainers.php"),
-    array("img" => "../figures/horse.png", "text" => "Konie", "content" => "download_horse.php"),
-    array("img" => "../figures/calender.png", "text" => "Terminarz", "content" => "terminarz.php"),
-    array("img" => "../figures/userEdit.png", "text" => "Dane", "content" => "client_data.php"),
-);
+session_start();
+include '../php/db.php';
+
+if ($_SESSION['user_role'] == 'administrator') {
+    // Przykładowe dane dla kafelków
+    $tiles = array(
+        //array("img" => "../figures/home.png", "text" => "Pulpit", "content" => "?"),
+        array("img" => "../figures/trener.png", "text" => "Trenerzy", "content" => "download_trainers_Admin.php"),
+        array("img" => "../figures/horse.png", "text" => "Konie", "content" => "download_horse.php"),
+        array("img" => "../figures/calender.png", "text" => "Terminarz", "content" => "terminarz.php"),
+        array("img" => "../figures/userEdit.png", "text" => "Dane", "content" => "client_data.php"),
+    );
+}
+
+else if ($_SESSION['user_role'] == 'trener') {
+    // Przykładowe dane dla kafelków
+    $tiles = array(
+        //array("img" => "../figures/home.png", "text" => "Pulpit", "content" => "?"),
+        array("img" => "../figures/trener.png", "text" => "Trenerzy", "content" => "download_trainers_Admin.php"),
+        array("img" => "../figures/horse.png", "text" => "Konie", "content" => "download_horse.php"),
+        array("img" => "../figures/calender.png", "text" => "Terminarz", "content" => "terminarz.php"),
+        array("img" => "../figures/userEdit.png", "text" => "Dane", "content" => "client_data.php"),
+    );
+}
+else if ($_SESSION['user_role'] == 'klient') {
+    // Przykładowe dane dla kafelków
+    $tiles = array(
+        //array("img" => "../figures/home.png", "text" => "Pulpit", "content" => "?"),
+        array("img" => "../figures/trener.png", "text" => "Trenerzy", "content" => "download_trainers_Admin.php"),
+        array("img" => "../figures/horse.png", "text" => "Konie", "content" => "download_horse.php"),
+        array("img" => "../figures/calender.png", "text" => "Terminarz", "content" => "terminarz.php"),
+        array("img" => "../figures/userEdit.png", "text" => "Dane", "content" => "client_data.php"),
+    );
+}
+$conn->close();
 
 // Wyświetlenie kafelków
 foreach ($tiles as $tile) {
@@ -15,6 +42,8 @@ foreach ($tiles as $tile) {
     echo '<div>' . htmlspecialchars($tile['text']) . '</div>';
     echo '</div>';
 }
+
+
 ?>
 
 <script>
