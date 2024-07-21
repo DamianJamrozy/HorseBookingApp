@@ -92,7 +92,6 @@ $conn->close();
     $(document).ready(function() {
         // Handle add trainer button click
         $('#add-trainer-button').click(function() {
-            $('.trainers-data').hide();
             $('#add-trainer-form').show();
         });
 
@@ -179,7 +178,7 @@ $conn->close();
 
 
 <!-- Formularz dodawania trenera -->
-<div id="add-trainer-form" class="add-trainer-form" style="display: none; margin-top: 20px;">
+<div id="add-trainer-form" class="add-trainer-form modal" style="display: none; margin-top: 20px;">
     <h3>Dodaj Trenera</h3>
     <form id="trainer-form">
         <div class="form-group">
@@ -242,6 +241,7 @@ $conn->close();
         </div>
 
         <button type="submit" class="btn btn-primary">Zapisz</button>
+        <button class="btn btn-primary" id="cancelBtn">Anuluj</button>
     </form>
 </div>
 

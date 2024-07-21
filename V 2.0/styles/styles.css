@@ -1,33 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Hand:wght@400..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 62.5%;
-  overflow-x: hidden;
-  height: 100%;
-}
-
-body {
-  height: 100%;
-  font-family: "Roboto", sans-serif;
-  background-color: whitesmoke;
-
-  line-height: 1;
-  font-weight: 400;
-  color: #555;
-  overflow-x: hidden;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-}
+/* Banner Styles */
 
 .banner {
   background-color: #1971c2;
@@ -50,26 +22,24 @@ body {
   font-weight: 600;
 }
 
-/* .logo {
-  width: 10rem;
-  height: 10rem;
-  border: 2px solid yellowgreen;
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-} */
-
 .welcome-text {
   flex: 1;
   font-size: 3rem;
   text-align: center;
 }
 
-main {
-  flex: 1;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
+.logout {
+  margin-right: 2rem;
 }
+
+.logout img {
+  width: 8rem;
+  /* Dostosowanie szerokości obrazu wylogowania */
+  cursor: pointer;
+  /* Zmiana kursora na wskaźnik */
+}
+
+/* Login Form Style */
 
 .login-img-inner {
   position: relative;
@@ -190,6 +160,7 @@ main {
   margin-top: 1rem;
 }
 
+/* Footer Styles */
 footer {
   background-color: #1971c2;
   color: white;
@@ -199,6 +170,9 @@ footer {
   flex-shrink: 0;
   font-size: 2rem;
 }
+
+/* Side bar styles */
+
 .sidebar {
   flex: 0 0 30rem;
   /* Szerokość sidebaru */
@@ -228,6 +202,8 @@ footer {
 }
 
 .sidebar a {
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: black;
   font-weight: bold;
@@ -240,6 +216,13 @@ footer {
   margin-right: 1rem;
   /* Margines po ikonie */
 }
+
+.menu-item {
+  cursor: pointer;
+}
+
+/* User Panel Context */
+
 .content {
   flex: 1;
   padding: 2rem;
@@ -251,21 +234,117 @@ footer {
   align-items: flex-start;
 }
 
-.logout {
-  margin-right: 2rem;
+/* Main view of logged user styles */
+
+.tiles{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2.3rem;
 }
 
-.logout img {
-  width: 8rem;
-  /* Dostosowanie szerokości obrazu wylogowania */
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 200px;
+  height: 200px;
+  border: 1px solid #bad4edc5;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
   cursor: pointer;
-  /* Zmiana kursora na wskaźnik */
 }
 
-.button-add {
-  margin-top: 2rem;
-  display: block;
+.tile:hover {
+  background-color: #bad4edc5;
 }
+
+.tile img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.tile::after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background-color: #bad4edc5;
+}
+
+/* Styled Table */
+
+.styled-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 2em;
+  min-width: 40rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+  background-color: #1971c2;
+  color: #ffffff;
+  text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 1.2rem 1.5rem;
+}
+
+.styled-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+  border-bottom: 2px solid #1971c2;
+}
+
+.styled-table tbody tr.active-row {
+  font-weight: bold;
+  color: #1971c2;
+}
+
+.styled-table a {
+  color: white;
+}
+
+.styled-table .user-image {
+  width: 50%;
+}
+
+.styled-table .edit-user-id,
+.styled-table .delete-user-id {
+  display: none;
+}
+
+.table-button {
+  padding: 2rem 2.4rem;
+  background-color: #1971c2;
+  color: #d8d8d8;
+  border: none;
+  border-radius: 10px;
+}
+
+.table-button:hover {
+  background-color: #228be6;
+  cursor: pointer;
+}
+
+/* Modal */
 
 .modal {
   display: none; /* Hidden by default */
@@ -280,89 +359,130 @@ footer {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-
-#add-trainer-form {
-  margin-top: 2rem;
-  border: 1px solid #ccc;
-  padding: 2rem;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  clear: both;
+/* Modal Content/Box */
+.modal-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #051727ce;
+  margin: 0 auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  max-width: 30%; /* Could be more or less, depending on screen size */
+  font-size: 2.4rem;
+  color: white;
+  border-radius: 10px;
 }
 
-#add-trainer-form label {
-  display: block;
-  margin-top: 1rem;
+/* The Close Button */
+.close {
+  color: #aaa;
+  align-self: flex-end;
+  font-size: 28px;
+  font-weight: bold;
 }
 
-#add-trainer-form input,
-#add-trainer-form select {
-  width: 100%;
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Modal Form */
+
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 1rem;
-  margin-top: 1rem;
+  gap: 2rem;
 }
 
+.form-control {
+  width: 80%;
+  padding: 1rem;
+  margin-bottom: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1.5rem;
 
-/* Styled table */
+  background-color: transparent;
+  border: none;
 
-.styled-table {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 2em;
-    min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid #bad4ed;
+
+  transition: all 0.5s ease-in-out;
+  color: #e8f1f9;
 }
 
-.styled-table thead tr {
-    background-color: #1971c2;
-    color: #ffffff;
-    text-align: left;
+.form-control:focus {
+  outline: none;
+  border: 1px solid #bad4ed;
+  transition: all 0.5s ease-in-out;
 }
 
-.styled-table th,
-.styled-table td {
-    padding: 12px 15px;
+.form-control:hover {
+  border: 1px solid #bad4ed;
+  transition: all 0.5s ease-in-out;
 }
 
-.styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
+#stopien_jezdziecki {
+  background-color: #555;
 }
 
-.styled-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+.flexend {
+  justify-self: flex-end;
 }
 
-.styled-table tbody tr:last-of-type {
-    border-bottom: 2px solid #1971c2;
+/* Trainers data */
+
+.trainers-data {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
-.styled-table tbody tr.active-row {
-    font-weight: bold;
-    color: #1971c2;
+.horses-data{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
-.styled-table .user-image {
-    width: 50%;
+.title {
+  font-size: 2.4rem;
 }
 
-.styled-table .edit-user-id,
-.styled-table .delete-user-id {
-    display: none;
+/* Filter Form */
+
+#filter-form {
+  margin-top: 2rem;
+  font-size: 2.4rem; 
 }
 
-.table-button {
-    padding: 2rem 2.4rem;
-    background-color: #1971c2;
-    color: #d8d8d8;
-    border: none;
-    border-radius: 10px;
+#filter-form select {
+  width: 10%;
+  padding: 1rem;
+  margin-bottom: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1.5rem;
+
+  background-color: transparent;
+  border: none;
+
+  border-bottom: 1px solid #1971c2;
+
+  transition: all 0.5s ease-in-out;
+  font-size: 2rem;
+  margin-right: 2rem;
 }
 
-.table-button:hover {
-    background-color: #228be6;
-    cursor: pointer;
-}
-
-.menu-item {
-    cursor: pointer;
+#filter-form label {
+  margin-right: 2rem;
 }
