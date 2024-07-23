@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Lip 20, 2024 at 04:34 PM
+-- Generation Time: Lip 23, 2024 at 08:03 AM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -101,7 +101,7 @@ CREATE TABLE `reservations` (
   `trener_id` int(11) NOT NULL,
   `data_rezerwacji_od` date NOT NULL,
   `data_rezerwacji_do` date NOT NULL,
-  `status` enum('aktywna','anulowana') DEFAULT 'aktywna'
+  `reservation_status` enum('aktywna','anulowana') DEFAULT 'aktywna'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
