@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Lip 23, 2024 at 08:03 AM
+-- Generation Time: Lip 23, 2024 at 02:07 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -67,7 +67,6 @@ INSERT INTO `clients` (`id`, `user_id`) VALUES
 CREATE TABLE `horses` (
   `id` int(11) NOT NULL,
   `imie` varchar(50) NOT NULL,
-  `wiek` int(11) DEFAULT NULL,
   `kolor` varchar(50) DEFAULT NULL,
   `rasa` varchar(50) DEFAULT NULL,
   `stan_zdrowia` text DEFAULT NULL,
@@ -82,11 +81,11 @@ CREATE TABLE `horses` (
 -- Dumping data for table `horses`
 --
 
-INSERT INTO `horses` (`id`, `imie`, `wiek`, `kolor`, `rasa`, `stan_zdrowia`, `rodzaj_konia`, `opis`, `data_urodzenia`, `wzrost`, `zdjecie`) VALUES
-(1, 'Bajka', 10, 'Kasztanowaty', 'Zimnokrwisty', 'Zdrowy', 'Koń wierzchowy', 'Koń o spokojnym charakterze, idealny dla początkujących jeźdźców.', '2012-05-15', 160, 'img/horses/bajka.jpg'),
-(2, 'Arabeska', 7, 'Srebrna', 'Arabski', 'Zdrowa', 'Koń wszechstronny', 'Koń o dużej energii, wymaga doświadczonego jeźdźca.', '2015-08-20', 155, 'img/horses/arabeska.jpg'),
-(3, 'Dżoker', 12, 'Gniady', 'Wielkopolski', 'Stabilny', 'Koń kawalerski', 'Koń o wyjątkowo przyjaznym usposobieniu, doskonały do jazdy rekreacyjnej.', '2010-03-10', 165, 'img/horses/dżoker.jpg'),
-(4, 'Miranda', 8, 'Biała', 'Angielski pełnej krwi', 'Zdrowa', 'Koń wyścigowy', 'Koń o szybkim biegu, doskonały do treningów wyścigowych.', '2016-11-25', 158, 'img/horses/miranda.jpg');
+INSERT INTO `horses` (`id`, `imie`, `kolor`, `rasa`, `stan_zdrowia`, `rodzaj_konia`, `opis`, `data_urodzenia`, `wzrost`, `zdjecie`) VALUES
+(1, 'Bajka', 'Kasztanowaty', 'Zimnokrwisty', 'Zdrowy', 'Koń wierzchowy', 'Koń o spokojnym charakterze, idealny dla początkujących jeźdźców.', '2012-05-15', 160, 'img/horses/bajka.jpg'),
+(2, 'Arabeska', 'Srebrna', 'Arabski', 'Zdrowa', 'Koń wszechstronny', 'Koń o dużej energii, wymaga doświadczonego jeźdźca.', '2015-08-20', 155, 'img/horses/arabeska.jpg'),
+(3, 'Dżoker', 'Gniady', 'Wielkopolski', 'Stabilny', 'Koń kawalerski', 'Koń o wyjątkowo przyjaznym usposobieniu, doskonały do jazdy rekreacyjnej.', '2010-03-10', 165, 'img/horses/dżoker.jpg'),
+(4, 'Miranda', 'Biała', 'Angielski pełnej krwi', 'Zdrowa', 'Koń wyścigowy', 'Koń o szybkim biegu, doskonały do treningów wyścigowych.', '2016-11-25', 158, 'img/horses/miranda.jpg');
 
 -- --------------------------------------------------------
 
@@ -122,7 +121,7 @@ CREATE TABLE `trainers` (
 INSERT INTO `trainers` (`id`, `user_id`) VALUES
 (4, 5),
 (5, 6),
-(8, 7);
+(12, 22);
 
 -- --------------------------------------------------------
 
@@ -156,7 +155,8 @@ INSERT INTO `users` (`id`, `imie`, `nazwisko`, `email`, `ulica`, `nr_domu`, `kod
 (3, 'Piotr', 'Wiśniewski', 'piotr.wisniewski@example.com', 'ul. Spacerowa 3', '3C', '20-300', 'Kraków', '555666777', 'img/users/klient2.jpg', '$2y$10$.j./muNElNoEobNhirsliOYErz/0MbWolIt.Ch9DODj5AFOLcXchS', 'klient', 'początkujący'),
 (5, 'Adam', 'Nowakowski', 'adam.nowakowski@example.com', 'ul. Szkoleniowa 6', '6F', '50-600', 'Wrocław', '888999000', 'img/employee/trener2.jpg', '$2y$10$DvjVg3th8dhHA3qn8b0EbuPkvThYIaHyZBEjUEMWN6aSkVXX14qfS', 'trener', 'zaawansowany'),
 (6, 'Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', 'ul. Konna 7', '7G', '60-700', 'Katowice', '999000111', 'img/employee/trener3.jpg', '$2y$10$dqYlsTwyPUle87Bj7O3aFO85yovrh/sW9s5r2NgcDARaFskC646W6', 'trener', 'początkujący'),
-(7, 'Damian', 'Jamroży', 'test@test', 'Test', '123', '33-333', 'Rzeszów', '1', 'img/employee/admin2.jpg', '$2y$10$x3K93dHr9GH5Qsq/z7foveqAsAT416yQ.vnQYFmQDxWWeFT4FyOgm', 'trener', 'początkujący');
+(22, 'Test', 'Trener', 'trener@trener', 'ul', '10', '33-333', 'Rzeszów', '555555555', '', '$2y$10$9QwGDQ8kY0SQcdHb9x2RGeJVtTtK6N4zJqcnsq7uflEo64eEA//Bm', 'trener', 'zaawansowany'),
+(25, 'Test', 'Klient', 'klient@klient', 'ul', '10', '33-333', 'Rzeszów', '666666666', '', '$2y$10$fhW.4E8q2UHTDRrCRHD8HOVcstvWt1U1som4zufdX7RUf1c/c4wze', 'klient', 'początkujący');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -237,13 +237,13 @@ ALTER TABLE `reservations`
 -- AUTO_INCREMENT for table `trainers`
 --
 ALTER TABLE `trainers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- Constraints for dumped tables
