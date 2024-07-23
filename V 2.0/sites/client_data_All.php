@@ -2,7 +2,7 @@
 include '../scripts/db.php';
 
 // Sprawdzenie, czy użytkownik jest zalogowany jako administrator
-if (!isset($_SESSION['user_id'])){ //|| $_SESSION['user_role'] !== 'administrator') {
+if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] !== 'administrator' && $_SESSION['user_role'] !== 'trener')){ //) {
     header("Location: index.php");
     exit();
 }
@@ -14,7 +14,12 @@ $sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'id';
 $sortOrder = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
 // Pobranie wszystkich użytkowników z bazy danych z uwzględnieniem filtrów i sortowania
-$sql = "SELECT * FROM users WHERE 1=1";
+if ($_SESSION['user_role'] == 'trener'){  
+    $sql = "SELECT * FROM users WHERE 1=1 AND rola NOT LIKE '%trener%' AND rola NOT LIKE '%administrator%'";
+}
+else{
+    $sql = "SELECT * FROM users WHERE 1=1";
+}
 
 if ($rolaFilter) {
     $sql .= " AND rola = '" . $conn->real_escape_string($rolaFilter) . "'";
@@ -116,8 +121,10 @@ $result = $conn->query($sql);
                                 class="sort-link">Rola</a></th>
                         <th><a href="?page=client_data_All.php&sort=stopien_jezdziecki&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>"
                                 class="sort-link">Stopień jeździecki</a></th>
-                        <th>Edytuj</th>
-                        <th>Usuń</th>
+                        <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                            <th>Edytuj</th>
+                            <th>Usuń</th>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -138,7 +145,7 @@ $result = $conn->query($sql);
                             echo '<td>' . htmlspecialchars($row['rola']) . '</td>';
                             echo '<td>' . htmlspecialchars($row['stopien_jezdziecki']) . '</td>';
 
-                            if ($row['rola'] === 'klient') {
+                            if ($row['rola'] === 'klient' && $_SESSION['user_role'] == 'administrator'){
                                 echo '<td>';
                                 echo '<button class="edit-button table-button" onclick="showEditModal(' . htmlspecialchars(json_encode($row)) . ')">Edytuj</button>';
                                 echo '</td>';
@@ -149,7 +156,7 @@ $result = $conn->query($sql);
                                 echo '<button type="submit" class="table-button" onclick="return confirm(\'Czy na pewno chcesz usunąć tego użytkownika?\')">Usuń</button>';
                                 echo '</form>';
                                 echo '</td>';
-                            } else {
+                            } elseif ($row['rola'] != 'klient' && $_SESSION['user_role'] == 'administrator') {
                                 echo '<td></td>'; // Empty cell for non-klient roles
                                 echo '<td></td>'; // Empty cell for non-klient roles
                             }

@@ -42,33 +42,49 @@ $result = $conn->query($sql);
                     <th>Rodzaj Konia</th>
                     <th>Opis</th>
                     <th>Zdjęcie</th>
-                    <th>Edytuj</th>
-                    <th>Usuń</th>
+                    <?php  if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
+                        <th>Edytuj</th>
+                    <?php } ?>
+                    <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                        <th>Usuń</th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
                 <?php if ($result->num_rows > 0): ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
+                            <?php
+                                 // Oblicz wiek
+                                $birthdate = $row['data_urodzenia'];
+                                $dob = new DateTime($birthdate);
+                                $now = new DateTime();
+                                $age = $now->diff($dob)->y;
+                            ?>
+
                             <td><?php echo htmlspecialchars($row['imie']); ?></td>
-                            <td><?php echo htmlspecialchars($row['wiek']); ?></td>
+                            <td><?php echo htmlspecialchars($age); ?></td>
                             <td><?php echo htmlspecialchars($row['rasa']); ?></td>
                             <td><?php echo htmlspecialchars($row['stan_zdrowia']); ?></td>
                             <td><?php echo htmlspecialchars($row['rodzaj_konia']); ?></td>
                             <td><?php echo htmlspecialchars($row['opis']); ?></td>
                             <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie konia" width="100"></td>
-                            <td>
-                                <button class="edit-button table-button" onclick='showEditModal(<?php echo json_encode($row); ?>)'>
-                                    Edytuj
-                                </button>
-                            </td>
-                            <td>
-                                <form method="post" action="../scripts/crud_horses.php" style="display:inline;">
-                                    <input type="hidden" name="delete_horse" value="1">
-                                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
-                                    <button type="submit" class="table-button" onclick="return confirm('Czy na pewno chcesz usunąć tego konia?')">Usuń</button>
-                                </form>
-                            </td>
+                            <?php  if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
+                                <td>
+                                    <button class="edit-button table-button" onclick='showEditModal(<?php echo json_encode($row); ?>)'>
+                                        Edytuj
+                                    </button>
+                                </td>
+                            <?php } ?>
+                            <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                                <td>
+                                    <form method="post" action="../scripts/crud_horses.php" style="display:inline;">
+                                        <input type="hidden" name="delete_horse" value="1">
+                                        <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
+                                        <button type="submit" class="table-button" onclick="return confirm('Czy na pewno chcesz usunąć tego konia?')">Usuń</button>
+                                    </form>
+                                </td>
+                            <?php } ?>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
@@ -78,7 +94,9 @@ $result = $conn->query($sql);
                 <?php endif; ?>
             </tbody>
         </table>
-        <button id="add-horse-button" onclick="showAddModal()" class="table-button">Dodaj Konia</button>
+        <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+            <button id="add-horse-button" onclick="showAddModal()" class="table-button">Dodaj Konia</button>
+        <?php } ?>
     </div>
 
     <!-- Modal do dodania konia -->
@@ -121,30 +139,41 @@ $result = $conn->query($sql);
         </div>
     </div>
 
+
     <!-- Modal do edycji konia -->
     <div id="edit-horse-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('edit-horse-modal')">&times;</span>
             <h3>Edytuj Konia</h3>
             <form method="post" action="../scripts/crud_horses.php">
-                <input type="hidden" name="edit_horse" value="1">
+                <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                    <input type="hidden" name="edit_horse" value="1">
+                <?php } ?>
+                <?php  if ($_SESSION['user_role'] == 'trener') { ?>
+                    <input type="hidden" name="edit_horse_trainer" value="1">
+                <?php } ?>
                 <input type="hidden" id="edit_horse_id" name="id">
-                <div class="form-group">
-                    <label for="edit_imie">Imię:</label>
-                    <input type="text" id="edit_imie" name="imie" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit_wiek">Wiek:</label>
-                    <input type="text" id="edit_wiek" name="wiek" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit_rasa">Rasa:</label>
-                    <input type="text" id="edit_rasa" name="rasa" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit_stan_zdrowia">Stan Zdrowia:</label>
-                    <input type="text" id="edit_stan_zdrowia" name="stan_zdrowia" class="form-control" required>
-                </div>
+                <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                    <div class="form-group">
+                        <label for="edit_imie">Imię:</label>
+                        <input type="text" id="edit_imie" name="imie" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_wiek">Wiek:</label>
+                        <input type="text" id="edit_wiek" name="wiek" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_rasa">Rasa:</label>
+                        <input type="text" id="edit_rasa" name="rasa" class="form-control" required>
+                    </div>
+                <?php } ?>
+                <?php  if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
+                    <div class="form-group">
+                        <label for="edit_stan_zdrowia">Stan Zdrowia:</label>
+                        <input type="text" id="edit_stan_zdrowia" name="stan_zdrowia" class="form-control" required>
+                    </div>
+                <?php } ?>
+                <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
                 <div class="form-group">
                     <label for="edit_rodzaj_konia">Rodzaj Konia:</label>
                     <input type="text" id="edit_rodzaj_konia" name="rodzaj_konia" class="form-control" required>
@@ -157,6 +186,7 @@ $result = $conn->query($sql);
                     <label for="edit_zdjecie">Zdjęcie URL:</label>
                     <input type="text" id="edit_zdjecie" name="zdjecie" class="form-control">
                 </div>
+                <?php } ?>
                 <button type="submit" class="table-button flexend">Zapisz zmiany</button>
             </form>
         </div>
@@ -167,17 +197,27 @@ $result = $conn->query($sql);
             document.getElementById('add-horse-modal').style.display = 'block';
         }
 
-        function showEditModal(horse) {
-            document.getElementById('edit_horse_id').value = horse.id;
-            document.getElementById('edit_imie').value = horse.imie;
-            document.getElementById('edit_wiek').value = horse.wiek;
-            document.getElementById('edit_rasa').value = horse.rasa;
-            document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia;
-            document.getElementById('edit_rodzaj_konia').value = horse.rodzaj_konia;
-            document.getElementById('edit_opis').value = horse.opis;
-            document.getElementById('edit_zdjecie').value = horse.zdjecie;
-            document.getElementById('edit-horse-modal').style.display = 'block';
-        }
+        <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+            function showEditModal(horse) {
+                document.getElementById('edit_horse_id').value = horse.id;
+                document.getElementById('edit_imie').value = horse.imie;
+                document.getElementById('edit_wiek').value = horse.wiek;
+                document.getElementById('edit_rasa').value = horse.rasa;
+                document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia;
+                document.getElementById('edit_rodzaj_konia').value = horse.rodzaj_konia;
+                document.getElementById('edit_opis').value = horse.opis;
+                document.getElementById('edit_zdjecie').value = horse.zdjecie;
+                document.getElementById('edit-horse-modal').style.display = 'block';
+            }
+        <?php } ?>
+
+         <?php  if ($_SESSION['user_role'] == 'trener') { ?>
+            function showEditModal(horse) {
+                document.getElementById('edit_horse_id').value = horse.id;
+                document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia;
+                document.getElementById('edit-horse-modal').style.display = 'block';
+            }
+        <?php } ?>
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';

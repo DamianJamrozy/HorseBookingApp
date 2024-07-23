@@ -1,0 +1,11 @@
+Admin:
+Login: admin@admin
+Hasło: admin123
+
+Trener:
+Login: trener@trener
+Hasło: trener@trener
+
+Klient:
+Login: klient@klient
+Hasło: klient@klient

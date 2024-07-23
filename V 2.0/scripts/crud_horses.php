@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $opis = $_POST['opis'];
         $zdjecie = $_POST['zdjecie'];
 
-        $sql = "INSERT INTO horses (imie, wiek, rasa, stan_zdrowia, rodzaj_konia, opis, zdjecie) 
+        $sql = "INSERT INTO horses (imie, data_urodzenia, rasa, stan_zdrowia, rodzaj_konia, opis, zdjecie) 
                 VALUES ('$imie', '$wiek', '$rasa', '$stan_zdrowia', '$rodzaj_konia', '$opis', '$zdjecie')";
 
         if ($conn->query($sql) === TRUE) {
@@ -20,9 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $_SESSION['error'] = "Błąd: " . $conn->error;
         }
-
     } elseif (isset($_POST['edit_horse'])) {
-        // Edytowanie konia
+        // Edytowanie konia admin
         $id = $_POST['id'];
         $imie = $_POST['imie'];
         $wiek = $_POST['wiek'];
@@ -32,8 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $opis = $_POST['opis'];
         $zdjecie = $_POST['zdjecie'];
 
-        $sql = "UPDATE horses SET imie='$imie', wiek='$wiek', rasa='$rasa', stan_zdrowia='$stan_zdrowia', 
+        $sql = "UPDATE horses SET imie='$imie', data_urodzenia='$wiek', rasa='$rasa', stan_zdrowia='$stan_zdrowia', 
                 rodzaj_konia='$rodzaj_konia', opis='$opis', zdjecie='$zdjecie' WHERE id='$id'";
+
+        if ($conn->query($sql) === TRUE) {
+            $_SESSION['message'] = "Koń został zaktualizowany.";
+        } else {
+            $_SESSION['error'] = "Błąd: " . $conn->error;
+        }
+
+    } elseif (isset($_POST['edit_horse_trainer'])) {
+        // Edytowanie konia trener - stan zdrowia
+        $id = $_POST['id'];
+        $stan_zdrowia = $_POST['stan_zdrowia'];
+        
+
+        $sql = "UPDATE horses SET stan_zdrowia='$stan_zdrowia' WHERE id='$id'";
 
         if ($conn->query($sql) === TRUE) {
             $_SESSION['message'] = "Koń został zaktualizowany.";
