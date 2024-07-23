@@ -2,7 +2,7 @@
 include '../scripts/db.php';
 
 // Sprawdzenie, czy użytkownik jest zalogowany jako administrator
-if (!isset($_SESSION['user_id'])){ //|| $_SESSION['user_role'] !== 'administrator') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'administrator') {
     header("Location: index.php");
     exit();
 }
@@ -225,10 +225,6 @@ $result = $conn->query($sql);
                             <option value="średniozaawansowany">Średniozaawansowany</option>
                             <option value="zaawansowany">Zaawansowany</option>
                         </select>
-                    </div>
-                     <div class="form-group">
-                        <label for="hashed_password">Hasło:</label>
-                        <input type="password" id="hashed_password" name="hashed_password" class="form-control" required>
                     </div>
                     <button type="submit" class="table-button">Zapisz</button>
                     <button type="button" class="table-button" onclick="closeModal('add-user-modal')">Anuluj</button>

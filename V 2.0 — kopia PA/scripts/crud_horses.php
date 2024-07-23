@@ -56,5 +56,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $conn->close();
-header("Location: ../sites/dashboard.php?page=download_horse.php"); // Zaktualizuj ścieżkę do odpowiedniej strony
+header("Location: ../sites/admin_panel.php?page=download_horse.php"); // Zaktualizuj ścieżkę do odpowiedniej strony
 ?>

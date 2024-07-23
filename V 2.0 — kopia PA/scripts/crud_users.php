@@ -12,11 +12,10 @@ if (isset($_POST['add_user'])) {
     $miasto = $_POST['miasto'];
     $telefon = $_POST['telefon'];
     $zdjecie = $_POST['zdjecie'];
-    $hashed_password = password_hash($_POST['hashed_password'], PASSWORD_DEFAULT);
     $rola = $_POST['rola'];
     $stopien_jezdziecki = $_POST['stopien_jezdziecki'];
 
-    $sql = "INSERT INTO users (imie, nazwisko, email, ulica, nr_domu, kod_pocztowy, miasto, telefon, zdjecie, hashed_password, rola, stopien_jezdziecki) VALUES ('$imie', '$nazwisko', '$email', '$ulica', '$nr_domu', '$kod_pocztowy', '$miasto', '$telefon', '$zdjecie', '$hashed_password', '$rola', '$stopien_jezdziecki')";
+    $sql = "INSERT INTO users (imie, nazwisko, email, ulica, nr_domu, kod_pocztowy, miasto, telefon, zdjecie, rola, stopien_jezdziecki) VALUES ('$imie', '$nazwisko', '$email', '$ulica', '$nr_domu', '$kod_pocztowy', '$miasto', '$telefon', '$zdjecie', '$rola', '$stopien_jezdziecki')";
 
     if ($conn->query($sql) === TRUE) {
         $_SESSION['message'] = "Użytkownik dodany pomyślnie!";
@@ -72,6 +71,6 @@ if (isset($_POST['add_user'])) {
 }
 
 $conn->close();
-header("Location: ../sites/dashboard.php?page=client_data_All.php");
+header("Location: ../sites/admin_panel.php?page=client_data_All.php");
 exit();
 ?>

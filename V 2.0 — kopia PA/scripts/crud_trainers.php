@@ -21,10 +21,9 @@ if (isset($_POST['add_trainer']) && $_POST['add_trainer'] == '1') {
     $zdjecie = sanitize($conn, $_POST['zdjecie']);
     $hashed_password = password_hash($_POST['hashed_password'], PASSWORD_DEFAULT);
     $stopien_jezdziecki = sanitize($conn, $_POST['stopien_jezdziecki']);
-    $trener = 'trener';
 
-    $sql_insert_user = "INSERT INTO users (imie, nazwisko, email, ulica, nr_domu, kod_pocztowy, miasto, telefon, zdjecie, hashed_password, rola, stopien_jezdziecki)
-                        VALUES ('$imie', '$nazwisko', '$email', '$ulica', '$nr_domu', '$kod_pocztowy', '$miasto', '$telefon', '$zdjecie', '$hashed_password','$trener', '$stopien_jezdziecki')";
+    $sql_insert_user = "INSERT INTO users (imie, nazwisko, email, ulica, nr_domu, kod_pocztowy, miasto, telefon, zdjecie, hashed_password, stopien_jezdziecki)
+                        VALUES ('$imie', '$nazwisko', '$email', '$ulica', '$nr_domu', '$kod_pocztowy', '$miasto', '$telefon', '$zdjecie', '$hashed_password', '$stopien_jezdziecki')";
 
     if ($conn->query($sql_insert_user) === TRUE) {
         $last_id = $conn->insert_id;
@@ -38,7 +37,7 @@ if (isset($_POST['add_trainer']) && $_POST['add_trainer'] == '1') {
         $_SESSION['error'] = 'Błąd podczas dodawania użytkownika.';
     }
 
-    header('Location: ../sites/dashboard.php?page=download_trainers.php');
+    header('Location: ../sites/admin_panel.php?page=download_trainers_Admin.php');
     exit();
 }
 
@@ -64,7 +63,7 @@ if (isset($_POST['edit_trainer']) && $_POST['edit_trainer'] == '1') {
         $_SESSION['error'] = 'Błąd podczas aktualizacji trenera.';
     }
 
-    header('Location: ../sites/dashboard.php?page=download_trainers.php');
+    header('Location: ../sites/admin_panel.php?page=download_trainers_Admin.php');
     exit();
 }
 
@@ -86,7 +85,7 @@ if (isset($_POST['delete_trainer']) && $_POST['delete_trainer'] == '1') {
         $_SESSION['error'] = 'Błąd podczas usuwania trenera.';
     }
 
-    header('Location: ../sites/dashboard.php?page=download_trainers.php');
+    header('Location: ../sites/admin_panel.php?page=download_trainers_Admin.php');
     exit();
 }
 

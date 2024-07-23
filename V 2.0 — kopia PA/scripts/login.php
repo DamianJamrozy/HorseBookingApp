@@ -45,13 +45,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Przekierowanie na odpowiednią stronę w zależności od roli użytkownika
             switch ($user['rola']) {
                 case 'administrator':
-                    header("Location: ../sites/dashboard.php");
+                    header("Location: ../sites/admin_panel.php");
                     exit(); // Zakończenie działania skryptu po przekierowaniu
                 case 'klient':
-                    header("Location: ../sites/dashboard.php");
+                    header("Location: ../sites/client_panel.php");
                     exit(); // Zakończenie działania skryptu po przekierowaniu
                 case 'trener':
-                    header("Location: ../sites/dashboard.php");
+                    header("Location: ../sites/trainer_panel.php");
                     exit(); // Zakończenie działania skryptu po przekierowaniu
                 default:
                     // Jeśli rola użytkownika nie jest rozpoznawana, możesz przekierować go gdzieś indziej lub wyświetlić odpowiedni komunikat
@@ -61,13 +61,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Nieprawidłowe hasło
             $error_message = "Nieprawidłowe hasło.";
-            include '../sites/index.php'; // Powrót do formularza logowania z komunikatem błędu
+            include 'index.php'; // Powrót do formularza logowania z komunikatem błędu
             exit();
         }
     } else {
         // Użytkownik o podanym adresie email nie istnieje
         $error_message = "Użytkownik o podanym adresie email nie istnieje.";
-        include '../sites/index.php'; // Powrót do formularza logowania z komunikatem błędu
+        include 'index.php'; // Powrót do formularza logowania z komunikatem błędu
         exit();
     }
 

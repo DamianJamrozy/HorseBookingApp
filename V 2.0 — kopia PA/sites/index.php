@@ -4,15 +4,15 @@ session_start();
 include '../scripts/db.php';
 
 if (isset($_SESSION['user_id']) && $_SESSION['user_role'] == 'administrator') {
-    header("Location: dashboard.php");
+    header("Location: admin_panel.php");
     exit();
 }
 else if (isset($_SESSION['user_id']) && $_SESSION['user_role'] == 'trener') {
-    header("Location: dashboard.php");
+    header("Location: trainer_panel.php");
     exit();
 }
 else if (isset($_SESSION['user_id']) && $_SESSION['user_role'] == 'klient') {
-    header("Location: dashboard.php");
+    header("Location: client_panel.php");
     exit();
 }
 else{
