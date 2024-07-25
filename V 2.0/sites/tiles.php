@@ -1,14 +1,7 @@
 <?php
 include '../scripts/db.php';
 
-if ($_SESSION['user_role'] == 'administrator') {
-    $tiles = array(
-        array("img" => "../figures/trener.png", "text" => "Trenerzy", "content" => "download_trainers.php"),
-        array("img" => "../figures/horse.png", "text" => "Konie", "content" => "download_horse.php"),
-        array("img" => "../figures/calender.png", "text" => "Terminarz", "content" => "terminarz.php"),
-        array("img" => "../figures/userEdit.png", "text" => "Dane", "content" => "client_data_All.php"),
-    );
-} else if ($_SESSION['user_role'] == 'trener') {
+if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') {
     $tiles = array(
         array("img" => "../figures/trener.png", "text" => "Trenerzy", "content" => "download_trainers.php"),
         array("img" => "../figures/horse.png", "text" => "Konie", "content" => "download_horse.php"),
@@ -20,7 +13,7 @@ if ($_SESSION['user_role'] == 'administrator') {
         array("img" => "../figures/trener.png", "text" => "Trenerzy", "content" => "download_trainers.php"),
         array("img" => "../figures/horse.png", "text" => "Konie", "content" => "download_horse.php"),
         array("img" => "../figures/calender.png", "text" => "Terminarz", "content" => "terminarz.php"),
-        array("img" => "../figures/userEdit.png", "text" => "Dane", "content" => "client_data_All.php"),
+        array("img" => "../figures/userEdit.png", "text" => "Dane", "content" => "client_data.php"),
     );
 }
 $conn->close();

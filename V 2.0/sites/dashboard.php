@@ -61,7 +61,11 @@ if (isset($_GET['page'])) {
                 <li class="menu-item"><a href="dashboard.php?page=download_trainers.php"><img src="../figures/trener.png" alt="Trenerzy" class="icon">Trenerzy</a></li>
                 <li class="menu-item"><a href="dashboard.php?page=download_horse.php"><img src="../figures/horse.png" alt="Konie" class="icon">Konie</a></li>
                 <li class="menu-item"><a href="dashboard.php?page=terminarz.php"><img src="../figures/calender.png" alt="Terminarz" class="icon">Terminarz</a></li>
-                <li class="menu-item"><a href="dashboard.php?page=client_data_All.php"><img src="../figures/userEdit.png" alt="Dane" class="icon">Dane osobowe</a></li>
+                <?php if ($_SESSION['user_role'] == 'klient'){ ?>
+                    <li class="menu-item"><a href="dashboard.php?page=client_data.php"><img src="../figures/userEdit.png" alt="Dane" class="icon">Moje dane</a></li>
+                <?php } else{ ?>
+                    <li class="menu-item"><a href="dashboard.php?page=client_data_All.php"><img src="../figures/userEdit.png" alt="Dane" class="icon">Dane osobowe</a></li>
+                <?php } ?>
             </ul>
         </div>
         <div class="content">

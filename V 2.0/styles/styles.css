@@ -326,9 +326,17 @@ footer {
   width: 50%;
 }
 
+.client-table {
+    cursor: default;
+}
+
+.client-table .img_client {
+    width: 100%;
+}
+
 .styled-table .edit-user-id,
 .styled-table .delete-user-id {
-  display: none;
+    display: none;
 }
 
 .table-button {
