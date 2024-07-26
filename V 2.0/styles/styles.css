@@ -494,3 +494,13 @@ footer {
 #filter-form label {
   margin-right: 2rem;
 }
+
+
+.drop-zone {
+    background-color: #555;
+    border-bottom: 1px solid #bad4ed;
+    font-size: 1.5rem;
+    width: 80%;
+    padding: 1rem;
+    cursor: pointer;
+}

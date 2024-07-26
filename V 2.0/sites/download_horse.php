@@ -37,15 +37,17 @@ $result = $conn->query($sql);
                 <tr>
                     <th>Imię</th>
                     <th>Wiek</th>
+                    <th>Wzrost</th>
                     <th>Rasa</th>
+                    <th>Kolor</th>
                     <th>Stan Zdrowia</th>
                     <th>Rodzaj Konia</th>
                     <th>Opis</th>
                     <th>Zdjęcie</th>
-                    <?php  if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
+                    <?php if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
                         <th>Edytuj</th>
                     <?php } ?>
-                    <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                    <?php if ($_SESSION['user_role'] == 'administrator') { ?>
                         <th>Usuń</th>
                     <?php } ?>
                 </tr>
@@ -64,19 +66,21 @@ $result = $conn->query($sql);
 
                             <td><?php echo htmlspecialchars($row['imie']); ?></td>
                             <td><?php echo htmlspecialchars($age); ?></td>
+                            <td><?php echo htmlspecialchars($row['wzrost']); ?></td>
                             <td><?php echo htmlspecialchars($row['rasa']); ?></td>
+                            <td><?php echo htmlspecialchars($row['kolor']); ?></td>
                             <td><?php echo htmlspecialchars($row['stan_zdrowia']); ?></td>
                             <td><?php echo htmlspecialchars($row['rodzaj_konia']); ?></td>
                             <td><?php echo htmlspecialchars($row['opis']); ?></td>
                             <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie konia" width="100"></td>
-                            <?php  if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
+                            <?php if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
                                 <td>
                                     <button class="edit-button table-button" onclick='showEditModal(<?php echo json_encode($row); ?>)'>
                                         Edytuj
                                     </button>
                                 </td>
                             <?php } ?>
-                            <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                            <?php if ($_SESSION['user_role'] == 'administrator') { ?>
                                 <td>
                                     <form method="post" action="../scripts/crud_horses.php" style="display:inline;">
                                         <input type="hidden" name="delete_horse" value="1">
@@ -94,7 +98,7 @@ $result = $conn->query($sql);
                 <?php endif; ?>
             </tbody>
         </table>
-        <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+        <?php if ($_SESSION['user_role'] == 'administrator') { ?>
             <button id="add-horse-button" onclick="showAddModal()" class="table-button">Dodaj Konia</button>
         <?php } ?>
     </div>
@@ -104,19 +108,27 @@ $result = $conn->query($sql);
         <div class="modal-content">
             <span class="close" onclick="closeModal('add-horse-modal')">&times;</span>
             <h3>Dodaj Konia</h3>
-            <form method="post" action="../scripts/crud_horses.php">
+            <form method="post" action="../scripts/crud_horses.php" enctype="multipart/form-data">
                 <input type="hidden" name="add_horse" value="1">
                 <div class="form-group">
                     <label for="imie">Imię:</label>
                     <input type="text" id="imie" name="imie" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="wiek">Wiek:</label>
-                    <input type="text" id="wiek" name="wiek" class="form-control" required>
+                    <label for="wiek">Data urodzenia:</label>
+                    <input type="date" id="wiek" name="wiek" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label for="rasa">Rasa:</label>
                     <input type="text" id="rasa" name="rasa" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="kolor">Kolor:</label>
+                    <input type="text" id="kolor" name="kolor" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="wzrost">Wzrost (cm):</label>
+                    <input type="number" id="wzrost" name="wzrost" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label for="stan_zdrowia">Stan Zdrowia:</label>
@@ -131,61 +143,78 @@ $result = $conn->query($sql);
                     <textarea id="opis" name="opis" class="form-control" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="zdjecie">Zdjęcie URL:</label>
-                    <input type="text" id="zdjecie" name="zdjecie" class="form-control">
-                </div>
+                   <label for="trainer_image">Zdjęcie:</label>
+                   <div class="drop-zone form-control" id="drop-zone">
+                       Przeciągnij lub wybierz zdjęcie...
+                       <input type="file" name="trainer_image" id="file-input" style="display: none;">
+                       <img id="preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+                   </div>
+                   <input type="hidden" id="employee-id" name="employee_id" value="">
+               </div>
                 <button type="submit" class="table-button flexend">Zapisz</button>
             </form>
         </div>
     </div>
-
 
     <!-- Modal do edycji konia -->
     <div id="edit-horse-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('edit-horse-modal')">&times;</span>
             <h3>Edytuj Konia</h3>
-            <form method="post" action="../scripts/crud_horses.php">
-                <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+            <form method="post" action="../scripts/crud_horses.php" enctype="multipart/form-data">
+                <?php if ($_SESSION['user_role'] == 'administrator') { ?>
                     <input type="hidden" name="edit_horse" value="1">
                 <?php } ?>
-                <?php  if ($_SESSION['user_role'] == 'trener') { ?>
+                <?php if ($_SESSION['user_role'] == 'trener') { ?>
                     <input type="hidden" name="edit_horse_trainer" value="1">
                 <?php } ?>
                 <input type="hidden" id="edit_horse_id" name="id">
-                <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+                <?php if ($_SESSION['user_role'] == 'administrator') { ?>
                     <div class="form-group">
                         <label for="edit_imie">Imię:</label>
                         <input type="text" id="edit_imie" name="imie" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit_wiek">Wiek:</label>
-                        <input type="text" id="edit_wiek" name="wiek" class="form-control" required>
+                        <label for="edit_wiek">Data urodzenia:</label>
+                        <input type="date" id="edit_wiek" name="wiek" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="edit_rasa">Rasa:</label>
                         <input type="text" id="edit_rasa" name="rasa" class="form-control" required>
                     </div>
+                    <div class="form-group">
+                        <label for="edit_kolor">Kolor:</label>
+                        <input type="text" id="edit_kolor" name="kolor" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                    <label for="edit_wzrost">Wzrost (cm):</label>
+                    <input type="edit_wzrost" id="edit_wzrost" name="wzrost" class="form-control" required>
+                </div>
                 <?php } ?>
-                <?php  if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
+                <?php if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
                     <div class="form-group">
                         <label for="edit_stan_zdrowia">Stan Zdrowia:</label>
                         <input type="text" id="edit_stan_zdrowia" name="stan_zdrowia" class="form-control" required>
                     </div>
                 <?php } ?>
-                <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
-                <div class="form-group">
-                    <label for="edit_rodzaj_konia">Rodzaj Konia:</label>
-                    <input type="text" id="edit_rodzaj_konia" name="rodzaj_konia" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit_opis">Opis:</label>
-                    <textarea id="edit_opis" name="opis" class="form-control" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="edit_zdjecie">Zdjęcie URL:</label>
-                    <input type="text" id="edit_zdjecie" name="zdjecie" class="form-control">
-                </div>
+                <?php if ($_SESSION['user_role'] == 'administrator') { ?>
+                    <div class="form-group">
+                        <label for="edit_rodzaj_konia">Rodzaj Konia:</label>
+                        <input type="text" id="edit_rodzaj_konia" name="rodzaj_konia" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_opis">Opis:</label>
+                        <textarea id="edit_opis" name="opis" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_trainer_image">Zdjęcie:</label>
+                        <div class="drop-zone form-control" id="edit-drop-zone">
+                            Przeciągnij lub wybierz zdjęcie...
+                            <input type="file" name="trainer_image" id="edit-file-input" style="display: none;">
+                            <img id="edit-preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+                        </div>
+                        <input type="hidden" id="edit-employee-id" name="employee_id" value="">
+                    </div>
                 <?php } ?>
                 <button type="submit" class="table-button flexend">Zapisz zmiany</button>
             </form>
@@ -193,31 +222,127 @@ $result = $conn->query($sql);
     </div>
 
     <script>
+       const dropZone = document.getElementById('drop-zone');
+       const fileInput = document.getElementById('file-input');
+       const employeeIdInput = document.getElementById('employee-id');
+       const previewImage = document.getElementById('preview-image');
+
+       dropZone.addEventListener('click', () => fileInput.click());
+
+       fileInput.addEventListener('change', (e) => {
+           if (e.target.files.length > 0) {
+               const file = e.target.files[0];
+               employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+
+               const reader = new FileReader();
+               reader.onload = function (e) {
+                   previewImage.src = e.target.result;
+                   previewImage.style.display = 'block';
+               }
+               reader.readAsDataURL(file);
+           }
+       });
+
+       dropZone.addEventListener('dragover', (e) => {
+           e.preventDefault();
+           dropZone.classList.add('dragover');
+       });
+
+       dropZone.addEventListener('dragleave', () => {
+           dropZone.classList.remove('dragover');
+       });
+
+       dropZone.addEventListener('drop', (e) => {
+           e.preventDefault();
+           dropZone.classList.remove('dragover');
+           if (e.dataTransfer.files.length > 0) {
+               const file = e.dataTransfer.files[0];
+               fileInput.files = e.dataTransfer.files;
+               employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+
+               const reader = new FileReader();
+               reader.onload = function (e) {
+                   previewImage.src = e.target.result;
+                   previewImage.style.display = 'block';
+               }
+               reader.readAsDataURL(file);
+           }
+       });
+   </script>
+
+    <script>
         function showAddModal() {
             document.getElementById('add-horse-modal').style.display = 'block';
         }
 
-        <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+        function setImageSrc(imageId, imageUrl) {
+            const imageElement = document.getElementById(imageId);
+            if (imageElement) {
+                imageElement.src = imageUrl;
+                imageElement.style.display = 'block';
+            }
+        }
+
+        <?php if ($_SESSION['user_role'] == 'administrator') { ?>
             function showEditModal(horse) {
                 document.getElementById('edit_horse_id').value = horse.id;
                 document.getElementById('edit_imie').value = horse.imie;
-                document.getElementById('edit_wiek').value = horse.wiek;
+                document.getElementById('edit_wiek').value = horse.data_urodzenia;
                 document.getElementById('edit_rasa').value = horse.rasa;
+                document.getElementById('edit_kolor').value = horse.kolor;
+                document.getElementById('edit_wzrost').value = horse.wzrost;
                 document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia;
                 document.getElementById('edit_rodzaj_konia').value = horse.rodzaj_konia;
                 document.getElementById('edit_opis').value = horse.opis;
-                document.getElementById('edit_zdjecie').value = horse.zdjecie;
+                document.getElementById('edit-horse-modal').style.display = 'block';
+
+                setImageSrc('edit-preview-image', '../' + horse.zdjecie); // Ustawienie podglądu obrazu
+            }
+        <?php } ?>
+
+        <?php if ($_SESSION['user_role'] == 'trener') { ?>
+            function showEditModal(horse) {
+                document.getElementById('edit_horse_id').value = horse.id;
+                document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia;
                 document.getElementById('edit-horse-modal').style.display = 'block';
             }
         <?php } ?>
 
-         <?php  if ($_SESSION['user_role'] == 'trener') { ?>
-            function showEditModal(horse) {
-                document.getElementById('edit_horse_id').value = horse.id;
-                document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia;
-                document.getElementById('edit-horse-modal').style.display = 'block';
+        document.getElementById('edit-drop-zone').addEventListener('click', () => document.getElementById('edit-file-input').click());
+
+        document.getElementById('edit-file-input').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    setImageSrc('edit-preview-image', e.target.result);
+                }
+                reader.readAsDataURL(file);
             }
-        <?php } ?>
+        });
+
+        document.getElementById('edit-drop-zone').addEventListener('dragover', (e) => {
+            e.preventDefault();
+            document.getElementById('edit-drop-zone').classList.add('dragover');
+        });
+
+        document.getElementById('edit-drop-zone').addEventListener('dragleave', () => {
+            document.getElementById('edit-drop-zone').classList.remove('dragover');
+        });
+
+        document.getElementById('edit-drop-zone').addEventListener('drop', (e) => {
+            e.preventDefault();
+            document.getElementById('edit-drop-zone').classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                document.getElementById('edit-file-input').files = e.dataTransfer.files;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    setImageSrc('edit-preview-image', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
