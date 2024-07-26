@@ -504,3 +504,7 @@ footer {
     padding: 1rem;
     cursor: pointer;
 }
+
+.form-control option {
+    background-color: #040f18ce;
+}

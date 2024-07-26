@@ -2,7 +2,7 @@
 include '../scripts/db.php';
 
 // Pobranie listy koni
-$sql = "SELECT h.id, h.imie, hc.kolor, hb.rasa, hh.stan_zdrowia, ht.rodzaj, h.opis, h.data_urodzenia, h.wzrost, h.zdjecie FROM horses AS h
+$sql = "SELECT h.id, h.imie, h.kolor AS kolor_id, hc.kolor, h.rasa AS rasa_id, hb.rasa, h.stan_zdrowia AS stan_zdrowia_id, hh.stan_zdrowia, h.rodzaj_konia AS rodzaj_konia_id, ht.rodzaj, h.opis, h.data_urodzenia, h.wzrost, h.zdjecie FROM horses AS h
 INNER JOIN horses_color AS hc ON h.kolor = hc.id_color
 INNER JOIN horses_type AS ht ON h.rodzaj_konia = ht.id_type
 INNER JOIN horses_health AS hh ON h.stan_zdrowia = hh.id_health
@@ -155,6 +155,7 @@ while ($row = $rodzaj_result->fetch_assoc()) {
                 <div class="form-group">
                     <label for="rasa">Rasa:</label>
                     <select id="rasa" name="rasa" class="form-control" required>
+                        <option value="" selected disabled>Wybierz rasę</option>
                         <?php foreach ($rasy as $rasa): ?>
                             <option value="<?php echo htmlspecialchars($rasa['id_breed']); ?>"><?php echo htmlspecialchars($rasa['rasa']); ?></option>
                         <?php endforeach; ?>
@@ -163,6 +164,7 @@ while ($row = $rodzaj_result->fetch_assoc()) {
                 <div class="form-group">
                     <label for="kolor">Kolor:</label>
                     <select id="kolor" name="kolor" class="form-control" required>
+                        <option value="" selected disabled>Wybierz kolor</option>
                         <?php foreach ($kolory as $kolor): ?>
                             <option value="<?php echo htmlspecialchars($kolor['id_color']); ?>"><?php echo htmlspecialchars($kolor['kolor']); ?></option>
                         <?php endforeach; ?>
@@ -175,6 +177,7 @@ while ($row = $rodzaj_result->fetch_assoc()) {
                 <div class="form-group">
                     <label for="stan_zdrowia">Stan Zdrowia:</label>
                     <select id="stan_zdrowia" name="stan_zdrowia" class="form-control" required>
+                        <option value="" selected disabled>Wybierz stan zdrowia</option>
                         <?php foreach ($stany as $stan): ?>
                             <option value="<?php echo htmlspecialchars($stan['id_health']); ?>"><?php echo htmlspecialchars($stan['stan_zdrowia']); ?></option>
                         <?php endforeach; ?>
@@ -183,6 +186,7 @@ while ($row = $rodzaj_result->fetch_assoc()) {
                 <div class="form-group">
                     <label for="rodzaj_konia">Rodzaj Konia:</label>
                     <select id="rodzaj_konia" name="rodzaj_konia" class="form-control" required>
+                        <option value="" selected disabled>Wybierz rodzaj konia</option>
                         <?php foreach ($rodzaje as $rodzaj): ?>
                             <option value="<?php echo htmlspecialchars($rodzaj['id_type']); ?>"><?php echo htmlspecialchars($rodzaj['rodzaj']); ?></option>
                         <?php endforeach; ?>
@@ -288,55 +292,53 @@ while ($row = $rodzaj_result->fetch_assoc()) {
     </div>
 
     <script>
-       const dropZone = document.getElementById('drop-zone');
-       const fileInput = document.getElementById('file-input');
-       const employeeIdInput = document.getElementById('employee-id');
-       const previewImage = document.getElementById('preview-image');
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const employeeIdInput = document.getElementById('employee-id');
+        const previewImage = document.getElementById('preview-image');
 
-       dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('click', () => fileInput.click());
 
-       fileInput.addEventListener('change', (e) => {
-           if (e.target.files.length > 0) {
-               const file = e.target.files[0];
-               employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
 
-               const reader = new FileReader();
-               reader.onload = function (e) {
-                   previewImage.src = e.target.result;
-                   previewImage.style.display = 'block';
-               }
-               reader.readAsDataURL(file);
-           }
-       });
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
-       dropZone.addEventListener('dragover', (e) => {
-           e.preventDefault();
-           dropZone.classList.add('dragover');
-       });
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
 
-       dropZone.addEventListener('dragleave', () => {
-           dropZone.classList.remove('dragover');
-       });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
 
-       dropZone.addEventListener('drop', (e) => {
-           e.preventDefault();
-           dropZone.classList.remove('dragover');
-           if (e.dataTransfer.files.length > 0) {
-               const file = e.dataTransfer.files[0];
-               fileInput.files = e.dataTransfer.files;
-               employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                fileInput.files = e.dataTransfer.files;
+                employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
 
-               const reader = new FileReader();
-               reader.onload = function (e) {
-                   previewImage.src = e.target.result;
-                   previewImage.style.display = 'block';
-               }
-               reader.readAsDataURL(file);
-           }
-       });
-   </script>
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
-    <script>
         function showAddModal() {
             document.getElementById('add-horse-modal').style.display = 'block';
         }
@@ -354,11 +356,11 @@ while ($row = $rodzaj_result->fetch_assoc()) {
                 document.getElementById('edit_horse_id').value = horse.id;
                 document.getElementById('edit_imie').value = horse.imie;
                 document.getElementById('edit_wiek').value = horse.data_urodzenia;
-                document.getElementById('edit_rasa').value = horse.rasa;
-                document.getElementById('edit_kolor').value = horse.kolor;
+                document.getElementById('edit_rasa').value = horse.rasa_id;
+                document.getElementById('edit_kolor').value = horse.kolor_id;
                 document.getElementById('edit_wzrost').value = horse.wzrost;
-                document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia;
-                document.getElementById('edit_rodzaj_konia').value = horse.rodzaj_konia;
+                document.getElementById('edit_stan_zdrowia').value = horse.stan_zdrowia_id;
+                document.getElementById('edit_rodzaj_konia').value = horse.rodzaj_konia_id;
                 document.getElementById('edit_opis').value = horse.opis;
                 document.getElementById('edit-horse-modal').style.display = 'block';
 
