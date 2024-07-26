@@ -2,20 +2,54 @@
 include '../scripts/db.php';
 
 // Pobranie listy koni
-$sql = "SELECT * FROM horses";
+$sql = "SELECT h.id, h.imie, hc.kolor, hb.rasa, hh.stan_zdrowia, ht.rodzaj, h.opis, h.data_urodzenia, h.wzrost, h.zdjecie FROM horses AS h
+INNER JOIN horses_color AS hc ON h.kolor = hc.id_color
+INNER JOIN horses_type AS ht ON h.rodzaj_konia = ht.id_type
+INNER JOIN horses_health AS hh ON h.stan_zdrowia = hh.id_health
+INNER JOIN horses_breed AS hb ON h.rasa = hb.id_breed";
 $result = $conn->query($sql);
+
+// Pobranie listy ras
+$rasa_sql = "SELECT id_breed, rasa FROM horses_breed";
+$rasa_result = $conn->query($rasa_sql);
+$rasy = [];
+while ($row = $rasa_result->fetch_assoc()) {
+    $rasy[] = $row;
+}
+
+// Pobranie listy kolorów
+$kolor_sql = "SELECT id_color, kolor FROM horses_color";
+$kolor_result = $conn->query($kolor_sql);
+$kolory = [];
+while ($row = $kolor_result->fetch_assoc()) {
+    $kolory[] = $row;
+}
+
+// Pobranie listy stanów zdrowia
+$stan_sql = "SELECT id_health, stan_zdrowia FROM horses_health";
+$stan_result = $conn->query($stan_sql);
+$stany = [];
+while ($row = $stan_result->fetch_assoc()) {
+    $stany[] = $row;
+}
+
+// Pobranie listy rodzajów koni
+$rodzaj_sql = "SELECT id_type, rodzaj FROM horses_type";
+$rodzaj_result = $conn->query($rodzaj_sql);
+$rodzaje = [];
+while ($row = $rodzaj_result->fetch_assoc()) {
+    $rodzaje[] = $row;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konie</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
     <?php
@@ -57,7 +91,7 @@ $result = $conn->query($sql);
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <?php
-                                 // Oblicz wiek
+                                // Oblicz wiek
                                 $birthdate = $row['data_urodzenia'];
                                 $dob = new DateTime($birthdate);
                                 $now = new DateTime();
@@ -70,7 +104,7 @@ $result = $conn->query($sql);
                             <td><?php echo htmlspecialchars($row['rasa']); ?></td>
                             <td><?php echo htmlspecialchars($row['kolor']); ?></td>
                             <td><?php echo htmlspecialchars($row['stan_zdrowia']); ?></td>
-                            <td><?php echo htmlspecialchars($row['rodzaj_konia']); ?></td>
+                            <td><?php echo htmlspecialchars($row['rodzaj']); ?></td>
                             <td><?php echo htmlspecialchars($row['opis']); ?></td>
                             <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie konia" width="100"></td>
                             <?php if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
@@ -120,11 +154,19 @@ $result = $conn->query($sql);
                 </div>
                 <div class="form-group">
                     <label for="rasa">Rasa:</label>
-                    <input type="text" id="rasa" name="rasa" class="form-control" required>
+                    <select id="rasa" name="rasa" class="form-control" required>
+                        <?php foreach ($rasy as $rasa): ?>
+                            <option value="<?php echo htmlspecialchars($rasa['id_breed']); ?>"><?php echo htmlspecialchars($rasa['rasa']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="kolor">Kolor:</label>
-                    <input type="text" id="kolor" name="kolor" class="form-control" required>
+                    <select id="kolor" name="kolor" class="form-control" required>
+                        <?php foreach ($kolory as $kolor): ?>
+                            <option value="<?php echo htmlspecialchars($kolor['id_color']); ?>"><?php echo htmlspecialchars($kolor['kolor']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="wzrost">Wzrost (cm):</label>
@@ -132,11 +174,19 @@ $result = $conn->query($sql);
                 </div>
                 <div class="form-group">
                     <label for="stan_zdrowia">Stan Zdrowia:</label>
-                    <input type="text" id="stan_zdrowia" name="stan_zdrowia" class="form-control" required>
+                    <select id="stan_zdrowia" name="stan_zdrowia" class="form-control" required>
+                        <?php foreach ($stany as $stan): ?>
+                            <option value="<?php echo htmlspecialchars($stan['id_health']); ?>"><?php echo htmlspecialchars($stan['stan_zdrowia']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="rodzaj_konia">Rodzaj Konia:</label>
-                    <input type="text" id="rodzaj_konia" name="rodzaj_konia" class="form-control" required>
+                    <select id="rodzaj_konia" name="rodzaj_konia" class="form-control" required>
+                        <?php foreach ($rodzaje as $rodzaj): ?>
+                            <option value="<?php echo htmlspecialchars($rodzaj['id_type']); ?>"><?php echo htmlspecialchars($rodzaj['rodzaj']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="opis">Opis:</label>
@@ -180,27 +230,43 @@ $result = $conn->query($sql);
                     </div>
                     <div class="form-group">
                         <label for="edit_rasa">Rasa:</label>
-                        <input type="text" id="edit_rasa" name="rasa" class="form-control" required>
+                        <select id="edit_rasa" name="rasa" class="form-control" required>
+                            <?php foreach ($rasy as $rasa): ?>
+                                <option value="<?php echo htmlspecialchars($rasa['id_breed']); ?>"><?php echo htmlspecialchars($rasa['rasa']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="edit_kolor">Kolor:</label>
-                        <input type="text" id="edit_kolor" name="kolor" class="form-control" required>
+                        <select id="edit_kolor" name="kolor" class="form-control" required>
+                            <?php foreach ($kolory as $kolor): ?>
+                                <option value="<?php echo htmlspecialchars($kolor['id_color']); ?>"><?php echo htmlspecialchars($kolor['kolor']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="form-group">
-                    <label for="edit_wzrost">Wzrost (cm):</label>
-                    <input type="edit_wzrost" id="edit_wzrost" name="wzrost" class="form-control" required>
-                </div>
+                        <label for="edit_wzrost">Wzrost (cm):</label>
+                        <input type="number" id="edit_wzrost" name="wzrost" class="form-control" required>
+                    </div>
                 <?php } ?>
                 <?php if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
                     <div class="form-group">
                         <label for="edit_stan_zdrowia">Stan Zdrowia:</label>
-                        <input type="text" id="edit_stan_zdrowia" name="stan_zdrowia" class="form-control" required>
+                        <select id="edit_stan_zdrowia" name="stan_zdrowia" class="form-control" required>
+                            <?php foreach ($stany as $stan): ?>
+                                <option value="<?php echo htmlspecialchars($stan['id_health']); ?>"><?php echo htmlspecialchars($stan['stan_zdrowia']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 <?php } ?>
                 <?php if ($_SESSION['user_role'] == 'administrator') { ?>
                     <div class="form-group">
                         <label for="edit_rodzaj_konia">Rodzaj Konia:</label>
-                        <input type="text" id="edit_rodzaj_konia" name="rodzaj_konia" class="form-control" required>
+                        <select id="edit_rodzaj_konia" name="rodzaj_konia" class="form-control" required>
+                            <?php foreach ($rodzaje as $rodzaj): ?>
+                                <option value="<?php echo htmlspecialchars($rodzaj['id_type']); ?>"><?php echo htmlspecialchars($rodzaj['rodzaj']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="edit_opis">Opis:</label>
@@ -356,5 +422,4 @@ $result = $conn->query($sql);
     </script>
 
 </body>
-
 </html>

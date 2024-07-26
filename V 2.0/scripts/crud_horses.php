@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\V 2.0\img\horses\\';
                 $dest_path = $uploadFileDir . uniqid() . '.' . $fileExtension;
 
-                if(move_uploaded_file($fileTmpPath, $dest_path)) {
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     // Przypisanie ścieżki zdjęcia
                     $zdjecie = 'img/horses/' . basename($dest_path);
                 } else {
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\V 2.0\img\horses\\';
                 $dest_path = $uploadFileDir . uniqid() . '.' . $fileExtension;
 
-                if(move_uploaded_file($fileTmpPath, $dest_path)) {
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     // Przypisanie ścieżki nowego zdjęcia
                     $new_image_path = 'img/horses/' . basename($dest_path);
                     // Usunięcie starego zdjęcia, jeśli istnieje
