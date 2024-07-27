@@ -1,15 +1,44 @@
 <?php
 include '../scripts/db.php';
 
-// Pobranie listy koni
-$sql = "SELECT h.id, h.imie, h.kolor AS kolor_id, hc.kolor, h.rasa AS rasa_id, hb.rasa, h.stan_zdrowia AS stan_zdrowia_id, hh.stan_zdrowia, h.rodzaj_konia AS rodzaj_konia_id, ht.rodzaj, h.opis, h.data_urodzenia, h.wzrost, h.zdjecie FROM horses AS h
-INNER JOIN horses_color AS hc ON h.kolor = hc.id_color
-INNER JOIN horses_type AS ht ON h.rodzaj_konia = ht.id_type
-INNER JOIN horses_health AS hh ON h.stan_zdrowia = hh.id_health
-INNER JOIN horses_breed AS hb ON h.rasa = hb.id_breed";
+// Pobranie wartości filtrów i sortowania
+$rasaFilter = isset($_GET['rasa']) ? $_GET['rasa'] : '';
+$kolorFilter = isset($_GET['kolor']) ? $_GET['kolor'] : '';
+$stanZdrowiaFilter = isset($_GET['stan_zdrowia']) ? $_GET['stan_zdrowia'] : '';
+$imieFilter = isset($_GET['imie']) ? $_GET['imie'] : ''; // Nowe pole wyszukiwania po imieniu
+$sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'id';
+$sortOrder = isset($_GET['order']) ? $_GET['order'] : 'ASC';
+
+// Pobranie listy koni z bazy danych z uwzględnieniem filtrów i sortowania
+$sql = "SELECT h.id, h.imie, h.kolor AS kolor_id, hc.kolor, h.rasa AS rasa_id, hb.rasa, h.stan_zdrowia AS stan_zdrowia_id, hh.stan_zdrowia, h.rodzaj_konia AS rodzaj_konia_id, ht.rodzaj, h.opis, h.data_urodzenia, h.wzrost, h.zdjecie 
+        FROM horses AS h
+        INNER JOIN horses_color AS hc ON h.kolor = hc.id_color
+        INNER JOIN horses_type AS ht ON h.rodzaj_konia = ht.id_type
+        INNER JOIN horses_health AS hh ON h.stan_zdrowia = hh.id_health
+        INNER JOIN horses_breed AS hb ON h.rasa = hb.id_breed
+        WHERE 1=1";
+
+if ($rasaFilter) {
+    $sql .= " AND h.rasa = '" . $conn->real_escape_string($rasaFilter) . "'";
+}
+
+if ($kolorFilter) {
+    $sql .= " AND h.kolor = '" . $conn->real_escape_string($kolorFilter) . "'";
+}
+
+if ($stanZdrowiaFilter) {
+    $sql .= " AND h.stan_zdrowia = '" . $conn->real_escape_string($stanZdrowiaFilter) . "'";
+}
+
+if ($imieFilter) {
+    $sql .= " AND h.imie LIKE '%" . $conn->real_escape_string($imieFilter) . "%'";
+}
+
+$sql .= " ORDER BY " . $conn->real_escape_string($sortColumn) . " " . $conn->real_escape_string($sortOrder);
+
 $result = $conn->query($sql);
 
-// Pobranie listy ras
+// Pobranie listy ras, kolorów, stanów zdrowia i rodzajów koni
 $rasa_sql = "SELECT id_breed, rasa FROM horses_breed";
 $rasa_result = $conn->query($rasa_sql);
 $rasy = [];
@@ -17,7 +46,6 @@ while ($row = $rasa_result->fetch_assoc()) {
     $rasy[] = $row;
 }
 
-// Pobranie listy kolorów
 $kolor_sql = "SELECT id_color, kolor FROM horses_color";
 $kolor_result = $conn->query($kolor_sql);
 $kolory = [];
@@ -25,7 +53,6 @@ while ($row = $kolor_result->fetch_assoc()) {
     $kolory[] = $row;
 }
 
-// Pobranie listy stanów zdrowia
 $stan_sql = "SELECT id_health, stan_zdrowia FROM horses_health";
 $stan_result = $conn->query($stan_sql);
 $stany = [];
@@ -33,7 +60,6 @@ while ($row = $stan_result->fetch_assoc()) {
     $stany[] = $row;
 }
 
-// Pobranie listy rodzajów koni
 $rodzaj_sql = "SELECT id_type, rodzaj FROM horses_type";
 $rodzaj_result = $conn->query($rodzaj_sql);
 $rodzaje = [];
@@ -49,6 +75,7 @@ while ($row = $rodzaj_result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konie</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
@@ -66,16 +93,72 @@ while ($row = $rodzaj_result->fetch_assoc()) {
 
     <div class="horses-data">
         <h2 class="title">Lista Konii</h2>
+        
+        <!-- Filter and Sort Form -->
+        <form id="filter-form" method="GET" action="">
+            <label for="imie">Imię:</label> <!-- Nowe pole wyszukiwania po imieniu -->
+            <input type="text" name="imie" id="imie" value="<?php echo htmlspecialchars($imieFilter); ?>">
+
+            <label for="rasa">Rasa:</label>
+            <select name="rasa" id="rasa">
+                <option value="">Wszystkie</option>
+                <?php foreach ($rasy as $rasa): ?>
+                    <option value="<?php echo htmlspecialchars($rasa['id_breed']); ?>" <?= $rasaFilter == $rasa['id_breed'] ? 'selected' : '' ?>>
+                        <?php echo htmlspecialchars($rasa['rasa']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="kolor">Kolor:</label>
+            <select name="kolor" id="kolor">
+                <option value="">Wszystkie</option>
+                <?php foreach ($kolory as $kolor): ?>
+                    <option value="<?php echo htmlspecialchars($kolor['id_color']); ?>" <?= $kolorFilter == $kolor['id_color'] ? 'selected' : '' ?>>
+                        <?php echo htmlspecialchars($kolor['kolor']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="stan_zdrowia">Stan Zdrowia:</label>
+            <select name="stan_zdrowia" id="stan_zdrowia">
+                <option value="">Wszystkie</option>
+                <?php foreach ($stany as $stan): ?>
+                    <option value="<?php echo htmlspecialchars($stan['id_health']); ?>" <?= $stanZdrowiaFilter == $stan['id_health'] ? 'selected' : '' ?>>
+                        <?php echo htmlspecialchars($stan['stan_zdrowia']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <span style="display:none">
+                <label for="sort">Sortuj według:</label>
+                <select name="sort" id="sort">
+                    <option value="imie" <?= $sortColumn == 'imie' ? 'selected' : '' ?>>Imię</option>
+                    <option value="data_urodzenia" <?= $sortColumn == 'data_urodzenia' ? 'selected' : '' ?>>Wiek</option>
+                    <option value="wzrost" <?= $sortColumn == 'wzrost' ? 'selected' : '' ?>>Wzrost</option>
+                    <option value="rasa" <?= $sortColumn == 'rasa' ? 'selected' : '' ?>>Rasa</option>
+                    <option value="kolor" <?= $sortColumn == 'kolor' ? 'selected' : '' ?>>Kolor</option>
+                    <option value="stan_zdrowia" <?= $sortColumn == 'stan_zdrowia' ? 'selected' : '' ?>>Stan Zdrowia</option>
+                    <option value="rodzaj_konia" <?= $sortColumn == 'rodzaj_konia' ? 'selected' : '' ?>>Rodzaj Konia</option>
+                </select>
+
+                <label for="order">Kolejność:</label>
+                <select name="order" id="order">
+                    <option value="ASC" <?= $sortOrder == 'ASC' ? 'selected' : '' ?>>Rosnąco</option>
+                    <option value="DESC" <?= $sortOrder == 'DESC' ? 'selected' : '' ?>>Malejąco</option>
+                </select>
+            </span>
+        </form>
+
         <table class="horses-table styled-table">
             <thead>
                 <tr>
-                    <th>Imię</th>
-                    <th>Wiek</th>
-                    <th>Wzrost</th>
-                    <th>Rasa</th>
-                    <th>Kolor</th>
-                    <th>Stan Zdrowia</th>
-                    <th>Rodzaj Konia</th>
+                    <th><a href="#" class="sort-link" data-column="imie">Imię</a></th>
+                    <th><a href="#" class="sort-link" data-column="data_urodzenia">Wiek</a></th>
+                    <th><a href="#" class="sort-link" data-column="wzrost">Wzrost</a></th>
+                    <th><a href="#" class="sort-link" data-column="rasa">Rasa</a></th>
+                    <th><a href="#" class="sort-link" data-column="kolor">Kolor</a></th>
+                    <th><a href="#" class="sort-link" data-column="stan_zdrowia">Stan Zdrowia</a></th>
+                    <th><a href="#" class="sort-link" data-column="rodzaj_konia">Rodzaj Konia</a></th>
                     <th>Opis</th>
                     <th>Zdjęcie</th>
                     <?php if ($_SESSION['user_role'] == 'administrator' || $_SESSION['user_role'] == 'trener') { ?>
@@ -86,7 +169,7 @@ while ($row = $rodzaj_result->fetch_assoc()) {
                     <?php } ?>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="horses-tbody">
                 <?php if ($result->num_rows > 0): ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
@@ -127,7 +210,7 @@ while ($row = $rodzaj_result->fetch_assoc()) {
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="9">Brak danych o koniach.</td>
+                        <td colspan="11">Brak danych o koniach.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -292,6 +375,41 @@ while ($row = $rodzaj_result->fetch_assoc()) {
     </div>
 
     <script>
+        function updateTable() {
+            const rasa = document.getElementById('rasa').value;
+            const kolor = document.getElementById('kolor').value;
+            const stan_zdrowia = document.getElementById('stan_zdrowia').value;
+            const imie = document.getElementById('imie').value; // Nowe pole wyszukiwania po imieniu
+            const sort = document.getElementById('sort').value;
+            const order = document.getElementById('order').value;
+
+            $.get('dashboard.php', {
+                page: 'download_horse.php',
+                rasa: rasa,
+                kolor: kolor,
+                stan_zdrowia: stan_zdrowia,
+                imie: imie, // Nowe pole wyszukiwania po imieniu
+                sort: sort,
+                order: order
+            }, function(data) {
+                const tbody = $(data).find('#horses-tbody').html();
+                $('#horses-tbody').html(tbody);
+            });
+        }
+
+        $(document).ready(function() {
+            $('#rasa, #kolor, #stan_zdrowia, #sort, #order, #imie').change(updateTable); // Nowe pole wyszukiwania po imieniu
+            $('.sort-link').click(function(e) {
+                e.preventDefault();
+                const column = $(this).data('column');
+                const currentOrder = $('#sort').val() === column ? $('#order').val() : 'ASC';
+                const newOrder = currentOrder === 'ASC' ? 'DESC' : 'ASC';
+                $('#sort').val(column);
+                $('#order').val(newOrder);
+                updateTable();
+            });
+        });
+
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
         const employeeIdInput = document.getElementById('employee-id');

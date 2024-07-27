@@ -46,9 +46,9 @@ if (isset($_GET['page'])) {
 
 <body>
     <header class="banner">
-        <div class="logo-container">
+        <a href="dashboard.php"><div class="logo-container">
             <p>Horse Riding Club</p>
-        </div>
+        </div></a>
         <div class="welcome-text">Witaj: <?php echo $imie_nazwisko; ?></div>
         <div class="logout">
             <a href="../scripts/logout.php"><img src="../figures/powerOff.png" alt="Wyloguj się"></a>

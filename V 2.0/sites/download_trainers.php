@@ -1,14 +1,31 @@
 <?php
 include '../scripts/db.php';
 
+// Pobranie wartości filtrów i sortowania
+$imieFilter = isset($_GET['imie']) ? $_GET['imie'] : '';
+$nazwiskoFilter = isset($_GET['nazwisko']) ? $_GET['nazwisko'] : '';
+$stopienFilter = isset($_GET['stopien_jezdziecki']) ? $_GET['stopien_jezdziecki'] : '';
+$sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'u.id';
+$sortOrder = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
-// Pobranie listy trenerów
-$sql = "SELECT *
-        FROM users u
-        JOIN trainers tr ON u.id = tr.user_id";
+// Pobranie listy trenerów z uwzględnieniem filtrów i sortowania
+$sql = "SELECT * FROM users u JOIN trainers tr ON u.id = tr.user_id WHERE 1=1";
+
+if ($imieFilter) {
+    $sql .= " AND u.imie LIKE '%" . $conn->real_escape_string($imieFilter) . "%'";
+}
+
+if ($nazwiskoFilter) {
+    $sql .= " AND u.nazwisko LIKE '%" . $conn->real_escape_string($nazwiskoFilter) . "%'";
+}
+
+if ($stopienFilter) {
+    $sql .= " AND u.stopien_jezdziecki = '" . $conn->real_escape_string($stopienFilter) . "'";
+}
+
+$sql .= " ORDER BY " . $conn->real_escape_string($sortColumn) . " " . $conn->real_escape_string($sortOrder);
 
 $result = $conn->query($sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +37,7 @@ $result = $conn->query($sql);
     <title>Trenerzy</title>
     <link rel="stylesheet" href="general.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -38,36 +56,60 @@ $result = $conn->query($sql);
 
     <div class="trainers-data">
         <h2 class="title">Trenerzy</h2>
+        
+        <!-- Filter and Sort Form -->
+        <form id="filter-form" method="GET" action="">
+            <label for="imie">Imię:</label>
+            <input type="text" name="imie" id="imie" value="<?= htmlspecialchars($imieFilter) ?>">
+            
+            <label for="nazwisko">Nazwisko:</label>
+            <input type="text" name="nazwisko" id="nazwisko" value="<?= htmlspecialchars($nazwiskoFilter) ?>">
+            
+            
+            <label for="stopien_jezdziecki">Stopień jeździecki:</label>
+            <select name="stopien_jezdziecki" id="stopien_jezdziecki">
+                <option value="">Wszystkie</option>
+                <option value="początkujący" <?= $stopienFilter == 'początkujący' ? 'selected' : '' ?>>Początkujący</option>
+                <option value="średniozaawansowany" <?= $stopienFilter == 'średniozaawansowany' ? 'selected' : '' ?>>Średniozaawansowany</option>
+                <option value="zaawansowany" <?= $stopienFilter == 'zaawansowany' ? 'selected' : '' ?>>Zaawansowany</option>
+            </select>
+
+            <span style="display:none;">
+                <label for="sort">Sortuj według:</label>
+                <select name="sort" id="sort">
+                    <option value="u.imie" <?= $sortColumn == 'u.imie' ? 'selected' : '' ?>>Imię</option>
+                    <option value="u.nazwisko" <?= $sortColumn == 'u.nazwisko' ? 'selected' : '' ?>>Nazwisko</option>
+                    <option value="u.stopien_jezdziecki" <?= $sortColumn == 'u.stopien_jezdziecki' ? 'selected' : '' ?>>Stopień jeździecki</option>
+                </select>
+
+                <label for="order">Kolejność:</label>
+                <select name="order" id="order">
+                    <option value="ASC" <?= $sortOrder == 'ASC' ? 'selected' : '' ?>>Rosnąco</option>
+                    <option value="DESC" <?= $sortOrder == 'DESC' ? 'selected' : '' ?>>Malejąco</option>
+                </select>
+            </span>
+        </form>
+
         <table class="trainers-table styled-table">
             <thead>
                 <tr>
                     <th>Zdjęcie</th>
-                    <th>Imię</th>
-                    <th>Nazwisko</th>
-                    <th>Stopień jeździecki</th>
-                    <?php  if ($_SESSION['user_role'] != 'klient') { ?>
-                    <th>Edytuj</th>
+                    <th><a href="#" class="sort-link" data-column="u.imie">Imię</a></th>
+                    <th><a href="#" class="sort-link" data-column="u.nazwisko">Nazwisko</a></th>
+                    <th><a href="#" class="sort-link" data-column="u.stopien_jezdziecki">Stopień jeździecki</a></th>
+                    <?php if ($_SESSION['user_role'] != 'klient') { ?>
+                        <th>Edytuj</th>
                     <?php } ?>
-                    <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
-                    <th>Usuń</th>
-                    <?php  }?>
-
-                    <script type="text/javascript">
-                        // Osadzenie zmiennej PHP w JavaScript
-                        var myVariable = "<?php echo $_SESSION['user_role']; ?>";
-                        // Wyświetlenie zmiennej w konsoli przeglądarki
-                        console.log(myVariable);
-                    </script>
-
-
+                    <?php if ($_SESSION['user_role'] == 'administrator') { ?>
+                        <th>Usuń</th>
+                    <?php } ?>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="trainers-tbody">
                 <?php if ($result->num_rows > 0): ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie trenera"
-                                    width="100"></td>
+                            <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie trenera" width="100"></td>
                             <td><?php echo htmlspecialchars($row['imie']); ?></td>
                             <td><?php echo htmlspecialchars($row['nazwisko']); ?></td>
                             <td><?php echo htmlspecialchars($row['stopien_jezdziecki']); ?></td>
@@ -100,197 +142,221 @@ $result = $conn->query($sql);
             </tbody>
         </table>
         
-        <?php  if ($_SESSION['user_role'] == 'administrator') { ?>
+        <?php if ($_SESSION['user_role'] == 'administrator') { ?>
             <button id="add-trainer-button" onclick="showAddModal()" class="table-button">Dodaj trenera</button>
         <?php } ?>
     </div>
 
-
-
     <?php if ($_SESSION['user_role'] == 'administrator') { ?>
-   <!-- Modal do dodania trenera -->
-   <div id="add-trainer-modal" class="modal">
-       <div class="modal-content">
-           <span class="close" onclick="closeModal('add-trainer-modal')">&times;</span>
-           <h3>Dodaj Trenera</h3>
-           <form method="post" action="../scripts/crud_trainers.php" enctype="multipart/form-data">
-               <input type="hidden" name="add_trainer" value="1">
-               <div class="form-group">
-                   <label for="imie">Imię:</label>
-                   <input type="text" id="imie" name="imie" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="nazwisko">Nazwisko:</label>
-                   <input type="text" id="nazwisko" name="nazwisko" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="email">Email:</label>
-                   <input type="email" id="email" name="email" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="ulica">Ulica:</label>
-                   <input type="text" id="ulica" name="ulica" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="nr_domu">Nr domu:</label>
-                   <input type="text" id="nr_domu" name="nr_domu" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="kod_pocztowy">Kod pocztowy:</label>
-                   <input type="text" id="kod_pocztowy" name="kod_pocztowy" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="miasto">Miasto:</label>
-                   <input type="text" id="miasto" name="miasto" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="telefon">Telefon:</label>
-                   <input type="text" id="telefon" name="telefon" class="form-control" required>
-               </div>
-               <div class="form-group">
-                   <label for="trainer_image">Zdjęcie:</label>
-                   <div class="drop-zone form-control" id="drop-zone">
-                       Przeciągnij lub wybierz zdjęcie...
-                       <input type="file" name="trainer_image" id="file-input" style="display: none;">
-                       <img id="preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
-                   </div>
-                   <input type="hidden" id="employee-id" name="employee_id" value="">
-               </div>
-               <div class="form-group">
-                   <label for="stopien_jezdziecki">Stopień jeździecki:</label>
-                   <select id="stopien_jezdziecki" name="stopien_jezdziecki" class="form-control">
-                       <option value="początkujący">Początkujący</option>
-                       <option value="średniozaawansowany">Średniozaawansowany</option>
-                       <option value="zaawansowany">Zaawansowany</option>
-                   </select>
-               </div>
-               <div class="form-group">
-                   <label for="hashed_password">Hasło:</label>
-                   <input type="password" id="hashed_password" name="hashed_password" class="form-control" required>
-               </div>
-               <button type="submit" class="table-button flexend">Zapisz</button>
-           </form>
-       </div>
-   </div>
-<?php } ?>
+        <!-- Modal do dodania trenera -->
+        <div id="add-trainer-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('add-trainer-modal')">&times;</span>
+                <h3>Dodaj Trenera</h3>
+                <form method="post" action="../scripts/crud_trainers.php" enctype="multipart/form-data">
+                    <input type="hidden" name="add_trainer" value="1">
+                    <div class="form-group">
+                        <label for="imie">Imię:</label>
+                        <input type="text" id="imie" name="imie" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nazwisko">Nazwisko:</label>
+                        <input type="text" id="nazwisko" name="nazwisko" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ulica">Ulica:</label>
+                        <input type="text" id="ulica" name="ulica" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nr_domu">Nr domu:</label>
+                        <input type="text" id="nr_domu" name="nr_domu" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kod_pocztowy">Kod pocztowy:</label>
+                        <input type="text" id="kod_pocztowy" name="kod_pocztowy" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="miasto">Miasto:</label>
+                        <input type="text" id="miasto" name="miasto" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefon">Telefon:</label>
+                        <input type="text" id="telefon" name="telefon" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trainer_image">Zdjęcie:</label>
+                        <div class="drop-zone form-control" id="drop-zone">
+                            Przeciągnij lub wybierz zdjęcie...
+                            <input type="file" name="trainer_image" id="file-input" style="display: none;">
+                            <img id="preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+                        </div>
+                        <input type="hidden" id="employee-id" name="employee_id" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="stopien_jezdziecki">Stopień jeździecki:</label>
+                        <select id="stopien_jezdziecki" name="stopien_jezdziecki" class="form-control">
+                            <option value="początkujący">Początkujący</option>
+                            <option value="średniozaawansowany">Średniozaawansowany</option>
+                            <option value="zaawansowany">Zaawansowany</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="hashed_password">Hasło:</label>
+                        <input type="password" id="hashed_password" name="hashed_password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="table-button flexend">Zapisz</button>
+                </form>
+            </div>
+        </div>
+    <?php } ?>
 
-
-
-
-
-
-<!-- Modal do edycji trenera -->
-<div id="edit-trainer-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('edit-trainer-modal')">&times;</span>
-        <h3>Edytuj Trenera</h3>
-        <form method="post" action="../scripts/crud_trainers.php" enctype="multipart/form-data">
-            <input type="hidden" name="edit_trainer" value="1">
-            <input type="hidden" id="edit_user_id" name="user_id">
-            <div class="form-group">
-                <label for="edit_imie">Imię:</label>
-                <input type="text" id="edit_imie" name="imie" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_nazwisko">Nazwisko:</label>
-                <input type="text" id="edit_nazwisko" name="nazwisko" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_email">Email:</label>
-                <input type="email" id="edit_email" name="email" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_ulica">Ulica:</label>
-                <input type="text" id="edit_ulica" name="ulica" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_nr_domu">Nr domu:</label>
-                <input type="text" id="edit_nr_domu" name="nr_domu" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_kod_pocztowy">Kod pocztowy:</label>
-                <input type="text" id="edit_kod_pocztowy" name="kod_pocztowy" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_miasto">Miasto:</label>
-                <input type="text" id="edit_miasto" name="miasto" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_telefon">Telefon:</label>
-                <input type="text" id="edit_telefon" name="telefon" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="edit_trainer_image">Zdjęcie:</label>
-                <div class="drop-zone form-control" id="edit-drop-zone">
-                    Przeciągnij lub wybierz zdjęcie...
-                    <input type="file" name="trainer_image" id="edit-file-input" style="display: none;">
-                    <img id="edit-preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+    <!-- Modal do edycji trenera -->
+    <div id="edit-trainer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('edit-trainer-modal')">&times;</span>
+            <h3>Edytuj Trenera</h3>
+            <form method="post" action="../scripts/crud_trainers.php" enctype="multipart/form-data">
+                <input type="hidden" name="edit_trainer" value="1">
+                <input type="hidden" id="edit_user_id" name="user_id">
+                <div class="form-group">
+                    <label for="edit_imie">Imię:</label>
+                    <input type="text" id="edit_imie" name="imie" class="form-control" required>
                 </div>
-                <input type="hidden" id="edit-employee-id" name="employee_id" value="">
-            </div>
-            <div class="form-group">
-                <label for="edit_stopien_jezdziecki">Stopień jeździecki:</label>
-                <select id="edit_stopien_jezdziecki" name="stopien_jezdziecki" class="form-control">
-                    <option value="początkujący">Początkujący</option>
-                    <option value="średniozaawansowany">Średniozaawansowany</option>
-                    <option value="zaawansowany">Zaawansowany</option>
-                </select>
-            </div>
-            <button type="submit" class="table-button flexend">Zapisz zmiany</button>
-        </form>
+                <div class="form-group">
+                    <label for="edit_nazwisko">Nazwisko:</label>
+                    <input type="text" id="edit_nazwisko" name="nazwisko" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_email">Email:</label>
+                    <input type="email" id="edit_email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_ulica">Ulica:</label>
+                    <input type="text" id="edit_ulica" name="ulica" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_nr_domu">Nr domu:</label>
+                    <input type="text" id="edit_nr_domu" name="nr_domu" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_kod_pocztowy">Kod pocztowy:</label>
+                    <input type="text" id="edit_kod_pocztowy" name="kod_pocztowy" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_miasto">Miasto:</label>
+                    <input type="text" id="edit_miasto" name="miasto" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_telefon">Telefon:</label>
+                    <input type="text" id="edit_telefon" name="telefon" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_trainer_image">Zdjęcie:</label>
+                    <div class="drop-zone form-control" id="edit-drop-zone">
+                        Przeciągnij lub wybierz zdjęcie...
+                        <input type="file" name="trainer_image" id="edit-file-input" style="display: none;">
+                        <img id="edit-preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+                    </div>
+                    <input type="hidden" id="edit-employee-id" name="employee_id" value="">
+                </div>
+                <div class="form-group">
+                    <label for="edit_stopien_jezdziecki">Stopień jeździecki:</label>
+                    <select id="edit_stopien_jezdziecki" name="stopien_jezdziecki" class="form-control">
+                        <option value="początkujący">Początkujący</option>
+                        <option value="średniozaawansowany">Średniozaawansowany</option>
+                        <option value="zaawansowany">Zaawansowany</option>
+                    </select>
+                </div>
+                <button type="submit" class="table-button flexend">Zapisz zmiany</button>
+            </form>
+        </div>
     </div>
-</div>
 
     <script>
-       const dropZone = document.getElementById('drop-zone');
-       const fileInput = document.getElementById('file-input');
-       const employeeIdInput = document.getElementById('employee-id');
-       const previewImage = document.getElementById('preview-image');
+        function updateTable() {
+            const imie = document.getElementById('imie').value;
+            const nazwisko = document.getElementById('nazwisko').value;
+            const stopien = document.getElementById('stopien_jezdziecki').value;
+            const sort = document.getElementById('sort').value;
+            const order = document.getElementById('order').value;
 
-       dropZone.addEventListener('click', () => fileInput.click());
+            $.get('dashboard.php', {
+                page: 'download_trainers.php',
+                imie: imie,
+                nazwisko: nazwisko,
+                stopien_jezdziecki: stopien,
+                sort: sort,
+                order: order
+            }, function(data) {
+                const tbody = $(data).find('#trainers-tbody').html();
+                $('#trainers-tbody').html(tbody);
+            });
+        }
 
-       fileInput.addEventListener('change', (e) => {
-           if (e.target.files.length > 0) {
-               const file = e.target.files[0];
-               employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+        $(document).ready(function() {
+            $('#imie, #nazwisko, #stopien_jezdziecki, #sort, #order').change(updateTable);
+            $('.sort-link').click(function(e) {
+                e.preventDefault();
+                const column = $(this).data('column');
+                const currentOrder = $('#sort').val() === column ? $('#order').val() : 'ASC';
+                const newOrder = currentOrder === 'ASC' ? 'DESC' : 'ASC';
+                $('#sort').val(column);
+                $('#order').val(newOrder);
+                updateTable();
+            });
+        });
 
-               const reader = new FileReader();
-               reader.onload = function (e) {
-                   previewImage.src = e.target.result;
-                   previewImage.style.display = 'block';
-               }
-               reader.readAsDataURL(file);
-           }
-       });
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const employeeIdInput = document.getElementById('employee-id');
+        const previewImage = document.getElementById('preview-image');
 
-       dropZone.addEventListener('dragover', (e) => {
-           e.preventDefault();
-           dropZone.classList.add('dragover');
-       });
+        dropZone.addEventListener('click', () => fileInput.click());
 
-       dropZone.addEventListener('dragleave', () => {
-           dropZone.classList.remove('dragover');
-       });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
 
-       dropZone.addEventListener('drop', (e) => {
-           e.preventDefault();
-           dropZone.classList.remove('dragover');
-           if (e.dataTransfer.files.length > 0) {
-               const file = e.dataTransfer.files[0];
-               fileInput.files = e.dataTransfer.files;
-               employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
-               const reader = new FileReader();
-               reader.onload = function (e) {
-                   previewImage.src = e.target.result;
-                   previewImage.style.display = 'block';
-               }
-               reader.readAsDataURL(file);
-           }
-       });
-   </script>
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
 
-    <script>
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                fileInput.files = e.dataTransfer.files;
+                employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
         function showAddModal() {
             document.getElementById('add-trainer-modal').style.display = 'block';
         }
@@ -354,7 +420,6 @@ $result = $conn->query($sql);
                 reader.readAsDataURL(file);
             }
         });
-
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';

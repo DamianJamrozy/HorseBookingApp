@@ -10,6 +10,8 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] !== 'administrator' 
 // Pobranie wartości filtrów i sortowania
 $rolaFilter = isset($_GET['rola']) ? $_GET['rola'] : '';
 $stopienFilter = isset($_GET['stopien_jezdziecki']) ? $_GET['stopien_jezdziecki'] : '';
+$imieFilter = isset($_GET['imie']) ? $_GET['imie'] : '';
+$nazwiskoFilter = isset($_GET['nazwisko']) ? $_GET['nazwisko'] : '';
 $sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'id';
 $sortOrder = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
@@ -25,6 +27,14 @@ if ($rolaFilter) {
 
 if ($stopienFilter) {
     $sql .= " AND stopien_jezdziecki = '" . $conn->real_escape_string($stopienFilter) . "'";
+}
+
+if ($imieFilter) {
+    $sql .= " AND imie LIKE '%" . $conn->real_escape_string($imieFilter) . "%'";
+}
+
+if ($nazwiskoFilter) {
+    $sql .= " AND nazwisko LIKE '%" . $conn->real_escape_string($nazwiskoFilter) . "%'";
 }
 
 $sql .= " ORDER BY " . $conn->real_escape_string($sortColumn) . " " . $conn->real_escape_string($sortOrder);
@@ -49,6 +59,13 @@ $result = $conn->query($sql);
             <!-- Filter and Sort Form -->
             <form id="filter-form" method="GET" action="">
                 <input type="hidden" name="page" value="client_data_All.php">
+                
+                <label for="imie">Imię:</label>
+                <input type="text" name="imie" id="imie" value="<?= htmlspecialchars($imieFilter) ?>" onchange="this.form.submit()">
+
+                <label for="nazwisko">Nazwisko:</label>
+                <input type="text" name="nazwisko" id="nazwisko" value="<?= htmlspecialchars($nazwiskoFilter) ?>" onchange="this.form.submit()">
+
                 <label for="rola">Rola:</label>
                 <select name="rola" id="rola" onchange="this.form.submit()">
                     <option value="">Wszystkie</option>
@@ -64,26 +81,29 @@ $result = $conn->query($sql);
                     <option value="zaawansowany" <?= $stopienFilter == 'zaawansowany' ? 'selected' : '' ?>>Zaawansowany</option>
                 </select>
 
-                <label for="sort">Sortuj według:</label>
-                <select name="sort" id="sort" onchange="this.form.submit()">
-                    <option value="id" <?= $sortColumn == 'id' ? 'selected' : '' ?>>ID</option>
-                    <option value="imie" <?= $sortColumn == 'imie' ? 'selected' : '' ?>>Imię</option>
-                    <option value="nazwisko" <?= $sortColumn == 'nazwisko' ? 'selected' : '' ?>>Nazwisko</option>
-                    <option value="email" <?= $sortColumn == 'email' ? 'selected' : '' ?>>Email</option>
-                    <option value="ulica" <?= $sortColumn == 'ulica' ? 'selected' : '' ?>>Ulica</option>
-                    <option value="nr_domu" <?= $sortColumn == 'nr_domu' ? 'selected' : '' ?>>Nr domu</option>
-                    <option value="kod_pocztowy" <?= $sortColumn == 'kod_pocztowy' ? 'selected' : '' ?>>Kod pocztowy</option>
-                    <option value="miasto" <?= $sortColumn == 'miasto' ? 'selected' : '' ?>>Miasto</option>
-                    <option value="telefon" <?= $sortColumn == 'telefon' ? 'selected' : '' ?>>Telefon</option>
-                    <option value="rola" <?= $sortColumn == 'rola' ? 'selected' : '' ?>>Rola</option>
-                    <option value="stopien_jezdziecki" <?= $sortColumn == 'stopien_jezdziecki' ? 'selected' : '' ?>>Stopień jeździecki</option>
-                </select>
 
-                <label for="order">Kolejność:</label>
-                <select name="order" id="order" onchange="this.form.submit()">
-                    <option value="ASC" <?= $sortOrder == 'ASC' ? 'selected' : '' ?>>Rosnąco</option>
-                    <option value="DESC" <?= $sortOrder == 'DESC' ? 'selected' : '' ?>>Malejąco</option>
-                </select>
+                <span style="display:none;">
+                    <label for="sort">Sortuj według:</label>
+                    <select name="sort" id="sort" onchange="this.form.submit()">
+                        <option value="id" <?= $sortColumn == 'id' ? 'selected' : '' ?>>ID</option>
+                        <option value="imie" <?= $sortColumn == 'imie' ? 'selected' : '' ?>>Imię</option>
+                        <option value="nazwisko" <?= $sortColumn == 'nazwisko' ? 'selected' : '' ?>>Nazwisko</option>
+                        <option value="email" <?= $sortColumn == 'email' ? 'selected' : '' ?>>Email</option>
+                        <option value="ulica" <?= $sortColumn == 'ulica' ? 'selected' : '' ?>>Ulica</option>
+                        <option value="nr_domu" <?= $sortColumn == 'nr_domu' ? 'selected' : '' ?>>Nr domu</option>
+                        <option value="kod_pocztowy" <?= $sortColumn == 'kod_pocztowy' ? 'selected' : '' ?>>Kod pocztowy</option>
+                        <option value="miasto" <?= $sortColumn == 'miasto' ? 'selected' : '' ?>>Miasto</option>
+                        <option value="telefon" <?= $sortColumn == 'telefon' ? 'selected' : '' ?>>Telefon</option>
+                        <option value="rola" <?= $sortColumn == 'rola' ? 'selected' : '' ?>>Rola</option>
+                        <option value="stopien_jezdziecki" <?= $sortColumn == 'stopien_jezdziecki' ? 'selected' : '' ?>>Stopień jeździecki</option>
+                    </select>
+
+                    <label for="order">Kolejność:</label>
+                    <select name="order" id="order" onchange="this.form.submit()">
+                        <option value="ASC" <?= $sortOrder == 'ASC' ? 'selected' : '' ?>>Rosnąco</option>
+                        <option value="DESC" <?= $sortOrder == 'DESC' ? 'selected' : '' ?>>Malejąco</option>
+                    </select>
+                </span>
             </form>
 
             <table class="users-table styled-table">
