@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Lip 28, 2024 at 05:31 PM
+-- Generation Time: Lip 28, 2024 at 08:43 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -20,43 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `klub_jezdziecki`
 --
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `administrators`
---
-
-CREATE TABLE `administrators` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `administrators`
---
-
-INSERT INTO `administrators` (`id`, `user_id`) VALUES
-(1, 1);
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `clients`
---
-
-CREATE TABLE `clients` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `clients`
---
-
-INSERT INTO `clients` (`id`, `user_id`) VALUES
-(1, 2),
-(2, 3);
 
 -- --------------------------------------------------------
 
@@ -203,26 +166,6 @@ INSERT INTO `reservations` (`id`, `klient_id`, `kon_id`, `trener_id`, `data_reze
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `trainers`
---
-
-CREATE TABLE `trainers` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `trainers`
---
-
-INSERT INTO `trainers` (`id`, `user_id`) VALUES
-(4, 5),
-(5, 6),
-(12, 22);
-
--- --------------------------------------------------------
-
---
 -- Struktura tabeli dla tabeli `users`
 --
 
@@ -238,8 +181,8 @@ CREATE TABLE `users` (
   `telefon` varchar(20) NOT NULL,
   `zdjecie` varchar(255) DEFAULT NULL,
   `hashed_password` varchar(255) NOT NULL,
-  `rola` enum('klient','trener','administrator') NOT NULL DEFAULT 'klient',
-  `stopien_jezdziecki` enum('początkujący','średniozaawansowany','zaawansowany') DEFAULT 'początkujący'
+  `rola` int(2) NOT NULL DEFAULT 3,
+  `stopien_jezdziecki` int(2) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -247,31 +190,57 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `imie`, `nazwisko`, `email`, `ulica`, `nr_domu`, `kod_pocztowy`, `miasto`, `telefon`, `zdjecie`, `hashed_password`, `rola`, `stopien_jezdziecki`) VALUES
-(1, 'Jan', 'Nowak', 'admin@admin', 'ul. Administratorów 1', 'A1', '00-001', 'Warszawa', '111222333', 'img/employee/admin.jpg', '$2y$10$x3K93dHr9GH5Qsq/z7foveqAsAT416yQ.vnQYFmQDxWWeFT4FyOgm', 'administrator', 'początkujący'),
-(2, 'Anna', 'Kowalska', 'klient1@klient.pl', 'ul. Testowa 2', '2B', '10-200', 'Poznań', '444555666', 'img/users/klient1.jpg', '$2y$10$JH2I0AqlbUc3vW.enko.7ePw9iqUjx0SXq0ONNkvhWEPuTh/t/C/G', 'klient', 'początkujący'),
-(3, 'Piotr', 'Wiśniewski', 'piotr.wisniewski@example.com', 'ul. Spacerowa 3', '3C', '20-300', 'Kraków', '555666777', 'img/users/klient2.jpg', '$2y$10$.j./muNElNoEobNhirsliOYErz/0MbWolIt.Ch9DODj5AFOLcXchS', 'klient', 'początkujący'),
-(5, 'Adam', 'Nowakowski', 'adam.nowakowski@example.com', 'ul. Szkoleniowa 6', '6F', '50-600', 'Wrocław', '888999000', 'img/employee/trener2.jpg', '$2y$10$DvjVg3th8dhHA3qn8b0EbuPkvThYIaHyZBEjUEMWN6aSkVXX14qfS', 'trener', 'zaawansowany'),
-(6, 'Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', 'ul. Konna 7', '7G', '60-700', 'Katowice', '999000111', 'img/employee/trener3.jpg', '$2y$10$dqYlsTwyPUle87Bj7O3aFO85yovrh/sW9s5r2NgcDARaFskC646W6', 'trener', 'początkujący'),
-(22, 'Test', 'Trener', 'trener@trener', 'ul', '10', '33-333', 'Rzeszów', '555555555', 'img/users/klient1.jpg', '$2y$10$9QwGDQ8kY0SQcdHb9x2RGeJVtTtK6N4zJqcnsq7uflEo64eEA//Bm', 'trener', 'zaawansowany'),
-(25, 'Test', 'Klient', 'klient@klient', 'ul', '10', '33-333', 'Rzeszów', '666666666', 'img/users/66a37d1e2d2d9.jpg', '$2y$10$fhW.4E8q2UHTDRrCRHD8HOVcstvWt1U1som4zufdX7RUf1c/c4wze', 'klient', 'początkujący');
+(1, 'Jan', 'Nowak', 'admin@admin', 'ul. Administratorów 1', 'A1', '00-001', 'Warszawa', '111222333', 'img/employee/admin.jpg', '$2y$10$x3K93dHr9GH5Qsq/z7foveqAsAT416yQ.vnQYFmQDxWWeFT4FyOgm', 1, 2),
+(2, 'Anna', 'Kowalska', 'klient1@klient.pl', 'ul. Testowa 2', '2B', '10-200', 'Poznań', '444555666', 'img/users/klient1.jpg', '$2y$10$JH2I0AqlbUc3vW.enko.7ePw9iqUjx0SXq0ONNkvhWEPuTh/t/C/G', 3, 1),
+(3, 'Piotr', 'Wiśniewski', 'piotr.wisniewski@example.com', 'ul. Spacerowa 3', '3C', '20-300', 'Kraków', '555666777', 'img/users/klient2.jpg', '$2y$10$.j./muNElNoEobNhirsliOYErz/0MbWolIt.Ch9DODj5AFOLcXchS', 3, 1),
+(5, 'Adam', 'Nowakowski', 'adam.nowakowski@example.com', 'ul. Szkoleniowa 6', '6F', '50-600', 'Wrocław', '888999000', 'img/employee/trener2.jpg', '$2y$10$DvjVg3th8dhHA3qn8b0EbuPkvThYIaHyZBEjUEMWN6aSkVXX14qfS', 2, 3),
+(6, 'Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', 'ul. Konna 7', '7G', '60-700', 'Katowice', '999000111', 'img/employee/trener3.jpg', '$2y$10$dqYlsTwyPUle87Bj7O3aFO85yovrh/sW9s5r2NgcDARaFskC646W6', 2, 1),
+(22, 'Test', 'Trener', 'trener@trener', 'ul', '10', '33-333', 'Rzeszów', '555555555', 'img/users/klient1.jpg', '$2y$10$9QwGDQ8kY0SQcdHb9x2RGeJVtTtK6N4zJqcnsq7uflEo64eEA//Bm', 2, 3),
+(25, 'Test', 'Klient', 'klient@klient', 'ul', '10', '33-333', 'Rzeszów', '666666666', 'img/users/66a37d1e2d2d9.jpg', '$2y$10$fhW.4E8q2UHTDRrCRHD8HOVcstvWt1U1som4zufdX7RUf1c/c4wze', 3, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `users_skill`
+--
+
+CREATE TABLE `users_skill` (
+  `id_skill` int(11) NOT NULL,
+  `stopien_jezdziecki` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_polish_ci;
+
+--
+-- Dumping data for table `users_skill`
+--
+
+INSERT INTO `users_skill` (`id_skill`, `stopien_jezdziecki`) VALUES
+(1, 'początkujący'),
+(2, 'średniozaawansowany'),
+(3, 'zaawansowany');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `users_type`
+--
+
+CREATE TABLE `users_type` (
+  `id_type` int(11) NOT NULL,
+  `rola` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_polish_ci;
+
+--
+-- Dumping data for table `users_type`
+--
+
+INSERT INTO `users_type` (`id_type`, `rola`) VALUES
+(1, 'Administrator'),
+(2, 'Trener'),
+(3, 'Klient');
 
 --
 -- Indeksy dla zrzutów tabel
 --
-
---
--- Indeksy dla tabeli `administrators`
---
-ALTER TABLE `administrators`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indeksy dla tabeli `clients`
---
-ALTER TABLE `clients`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indeksy dla tabeli `horses`
@@ -317,34 +286,29 @@ ALTER TABLE `reservations`
   ADD KEY `trener_id` (`trener_id`);
 
 --
--- Indeksy dla tabeli `trainers`
---
-ALTER TABLE `trainers`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indeksy dla tabeli `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `rola` (`rola`),
+  ADD KEY `stopien_jezdziecki` (`stopien_jezdziecki`);
+
+--
+-- Indeksy dla tabeli `users_skill`
+--
+ALTER TABLE `users_skill`
+  ADD PRIMARY KEY (`id_skill`);
+
+--
+-- Indeksy dla tabeli `users_type`
+--
+ALTER TABLE `users_type`
+  ADD PRIMARY KEY (`id_type`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `administrators`
---
-ALTER TABLE `administrators`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `clients`
---
-ALTER TABLE `clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `horses`
@@ -383,32 +347,26 @@ ALTER TABLE `reservations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT for table `trainers`
---
-ALTER TABLE `trainers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
-
---
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
+-- AUTO_INCREMENT for table `users_skill`
+--
+ALTER TABLE `users_skill`
+  MODIFY `id_skill` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `users_type`
+--
+ALTER TABLE `users_type`
+  MODIFY `id_type` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `administrators`
---
-ALTER TABLE `administrators`
-  ADD CONSTRAINT `administrators_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `clients`
---
-ALTER TABLE `clients`
-  ADD CONSTRAINT `clients_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `horses`
@@ -428,10 +386,11 @@ ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_5` FOREIGN KEY (`trener_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `trainers`
+-- Constraints for table `users`
 --
-ALTER TABLE `trainers`
-  ADD CONSTRAINT `trainers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`rola`) REFERENCES `users_type` (`id_type`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`stopien_jezdziecki`) REFERENCES `users_skill` (`id_skill`) ON DELETE NO ACTION ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -12,34 +12,46 @@ $rolaFilter = isset($_GET['rola']) ? $_GET['rola'] : '';
 $stopienFilter = isset($_GET['stopien_jezdziecki']) ? $_GET['stopien_jezdziecki'] : '';
 $imieFilter = isset($_GET['imie']) ? $_GET['imie'] : '';
 $nazwiskoFilter = isset($_GET['nazwisko']) ? $_GET['nazwisko'] : '';
-$sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'id';
+$sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'u.id';
 $sortOrder = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
 // Pobranie wszystkich użytkowników z bazy danych z uwzględnieniem filtrów i sortowania
-$sql = "SELECT * FROM users WHERE 1=1";
+$sql = "SELECT u.*, ut.rola AS rola_nazwa, us.stopien_jezdziecki AS stopien_nazwa 
+        FROM users u 
+        INNER JOIN users_type ut ON u.rola = ut.id_type 
+        INNER JOIN users_skill us ON u.stopien_jezdziecki = us.id_skill 
+        WHERE 1=1";
+
 if ($_SESSION['user_role'] == 'trener') {
-    $sql .= " AND rola NOT LIKE '%trener%' AND rola NOT LIKE '%administrator%'";
+    $sql .= " AND ut.rola NOT LIKE '%trener%' AND ut.rola NOT LIKE '%administrator%'";
 }
 
 if ($rolaFilter) {
-    $sql .= " AND rola = '" . $conn->real_escape_string($rolaFilter) . "'";
+    $sql .= " AND ut.rola = '" . $conn->real_escape_string($rolaFilter) . "'";
 }
 
 if ($stopienFilter) {
-    $sql .= " AND stopien_jezdziecki = '" . $conn->real_escape_string($stopienFilter) . "'";
+    $sql .= " AND us.stopien_jezdziecki = '" . $conn->real_escape_string($stopienFilter) . "'";
 }
 
 if ($imieFilter) {
-    $sql .= " AND imie LIKE '%" . $conn->real_escape_string($imieFilter) . "%'";
+    $sql .= " AND u.imie LIKE '%" . $conn->real_escape_string($imieFilter) . "%'";
 }
 
 if ($nazwiskoFilter) {
-    $sql .= " AND nazwisko LIKE '%" . $conn->real_escape_string($nazwiskoFilter) . "%'";
+    $sql .= " AND u.nazwisko LIKE '%" . $conn->real_escape_string($nazwiskoFilter) . "%'";
 }
 
 $sql .= " ORDER BY " . $conn->real_escape_string($sortColumn) . " " . $conn->real_escape_string($sortOrder);
 
 $result = $conn->query($sql);
+
+// Pobranie wszystkich ról i stopni jeździeckich
+$rolesQuery = "SELECT * FROM users_type";
+$rolesResult = $conn->query($rolesQuery);
+
+$skillsQuery = "SELECT * FROM users_skill";
+$skillsResult = $conn->query($skillsQuery);
 ?>
 
 <!DOCTYPE html>
@@ -71,6 +83,7 @@ $result = $conn->query($sql);
                     <option value="">Wszystkie</option>
                     <option value="administrator" <?= $rolaFilter == 'administrator' ? 'selected' : '' ?>>Administrator</option>
                     <option value="klient" <?= $rolaFilter == 'klient' ? 'selected' : '' ?>>Klient</option>
+                    <option value="trener" <?= $rolaFilter == 'trener' ? 'selected' : '' ?>>Trener</option>
                 </select>
 
                 <label for="stopien_jezdziecki">Stopień jeździecki:</label>
@@ -81,21 +94,20 @@ $result = $conn->query($sql);
                     <option value="zaawansowany" <?= $stopienFilter == 'zaawansowany' ? 'selected' : '' ?>>Zaawansowany</option>
                 </select>
 
-
                 <span style="display:none;">
                     <label for="sort">Sortuj według:</label>
                     <select name="sort" id="sort" onchange="this.form.submit()">
-                        <option value="id" <?= $sortColumn == 'id' ? 'selected' : '' ?>>ID</option>
-                        <option value="imie" <?= $sortColumn == 'imie' ? 'selected' : '' ?>>Imię</option>
-                        <option value="nazwisko" <?= $sortColumn == 'nazwisko' ? 'selected' : '' ?>>Nazwisko</option>
-                        <option value="email" <?= $sortColumn == 'email' ? 'selected' : '' ?>>Email</option>
-                        <option value="ulica" <?= $sortColumn == 'ulica' ? 'selected' : '' ?>>Ulica</option>
-                        <option value="nr_domu" <?= $sortColumn == 'nr_domu' ? 'selected' : '' ?>>Nr domu</option>
-                        <option value="kod_pocztowy" <?= $sortColumn == 'kod_pocztowy' ? 'selected' : '' ?>>Kod pocztowy</option>
-                        <option value="miasto" <?= $sortColumn == 'miasto' ? 'selected' : '' ?>>Miasto</option>
-                        <option value="telefon" <?= $sortColumn == 'telefon' ? 'selected' : '' ?>>Telefon</option>
-                        <option value="rola" <?= $sortColumn == 'rola' ? 'selected' : '' ?>>Rola</option>
-                        <option value="stopien_jezdziecki" <?= $sortColumn == 'stopien_jezdziecki' ? 'selected' : '' ?>>Stopień jeździecki</option>
+                        <option value="u.id" <?= $sortColumn == 'u.id' ? 'selected' : '' ?>>ID</option>
+                        <option value="u.imie" <?= $sortColumn == 'u.imie' ? 'selected' : '' ?>>Imię</option>
+                        <option value="u.nazwisko" <?= $sortColumn == 'u.nazwisko' ? 'selected' : '' ?>>Nazwisko</option>
+                        <option value="u.email" <?= $sortColumn == 'u.email' ? 'selected' : '' ?>>Email</option>
+                        <option value="u.ulica" <?= $sortColumn == 'u.ulica' ? 'selected' : '' ?>>Ulica</option>
+                        <option value="u.nr_domu" <?= $sortColumn == 'u.nr_domu' ? 'selected' : '' ?>>Nr domu</option>
+                        <option value="u.kod_pocztowy" <?= $sortColumn == 'u.kod_pocztowy' ? 'selected' : '' ?>>Kod pocztowy</option>
+                        <option value="u.miasto" <?= $sortColumn == 'u.miasto' ? 'selected' : '' ?>>Miasto</option>
+                        <option value="u.telefon" <?= $sortColumn == 'u.telefon' ? 'selected' : '' ?>>Telefon</option>
+                        <option value="ut.rola" <?= $sortColumn == 'ut.rola' ? 'selected' : '' ?>>Rola</option>
+                        <option value="us.stopien_jezdziecki" <?= $sortColumn == 'us.stopien_jezdziecki' ? 'selected' : '' ?>>Stopień jeździecki</option>
                     </select>
 
                     <label for="order">Kolejność:</label>
@@ -109,18 +121,18 @@ $result = $conn->query($sql);
             <table class="users-table styled-table">
                 <thead>
                     <tr>
-                        <th><a href="?page=client_data_All.php&sort=id&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">ID</a></th>
-                        <th><a href="?page=client_data_All.php&sort=imie&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Imię</a></th>
-                        <th><a href="?page=client_data_All.php&sort=nazwisko&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Nazwisko</a></th>
-                        <th><a href="?page=client_data_All.php&sort=email&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Email</a></th>
-                        <th><a href="?page=client_data_All.php&sort=ulica&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Ulica</a></th>
-                        <th><a href="?page=client_data_All.php&sort=nr_domu&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Nr domu</a></th>
-                        <th><a href="?page=client_data_All.php&sort=kod_pocztowy&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Kod pocztowy</a></th>
-                        <th><a href="?page=client_data_All.php&sort=miasto&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Miasto</a></th>
-                        <th><a href="?page=client_data_All.php&sort=telefon&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Telefon</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.id&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">ID</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.imie&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Imię</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.nazwisko&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Nazwisko</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.email&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Email</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.ulica&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Ulica</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.nr_domu&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Nr domu</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.kod_pocztowy&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Kod pocztowy</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.miasto&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Miasto</a></th>
+                        <th><a href="?page=client_data_All.php&sort=u.telefon&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Telefon</a></th>
                         <th>Zdjęcie</th>
-                        <th><a href="?page=client_data_All.php&sort=rola&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Rola</a></th>
-                        <th><a href="?page=client_data_All.php&sort=stopien_jezdziecki&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Stopień jeździecki</a></th>
+                        <th><a href="?page=client_data_All.php&sort=ut.rola&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Rola</a></th>
+                        <th><a href="?page=client_data_All.php&sort=us.stopien_jezdziecki&order=<?= $sortOrder === 'ASC' ? 'DESC' : 'ASC' ?>" class="sort-link">Stopień jeździecki</a></th>
                         <?php if ($_SESSION['user_role'] == 'administrator') { ?>
                             <th>Edytuj</th>
                             <th>Usuń</th>
@@ -142,10 +154,10 @@ $result = $conn->query($sql);
                             echo '<td>' . htmlspecialchars($row['miasto']) . '</td>';
                             echo '<td>' . htmlspecialchars($row['telefon']) . '</td>';
                             echo '<td><img src="../' . htmlspecialchars($row['zdjecie']) . '" alt="Zdjęcie" class="user-image"></td>';
-                            echo '<td>' . htmlspecialchars($row['rola']) . '</td>';
-                            echo '<td>' . htmlspecialchars($row['stopien_jezdziecki']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['rola_nazwa']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['stopien_nazwa']) . '</td>';
 
-                            if ($row['rola'] === 'klient' && $_SESSION['user_role'] == 'administrator') {
+                            if ($_SESSION['user_role'] == 'administrator') {
                                 echo '<td>';
                                 echo '<button class="edit-button table-button" onclick=\'showEditModal(' . json_encode($row) . ')\'>Edytuj</button>';
                                 echo '</td>';
@@ -156,9 +168,6 @@ $result = $conn->query($sql);
                                 echo '<button type="submit" class="table-button" onclick="return confirm(\'Czy na pewno chcesz usunąć tego użytkownika?\')">Usuń</button>';
                                 echo '</form>';
                                 echo '</td>';
-                            } elseif ($row['rola'] != 'klient' && $_SESSION['user_role'] == 'administrator') {
-                                echo '<td></td>'; // Empty cell for non-klient roles
-                                echo '<td></td>'; // Empty cell for non-klient roles
                             }
                             echo '</tr>';
                         }
@@ -226,16 +235,25 @@ $result = $conn->query($sql);
                     <div class="form-group">
                         <label for="rola">Rola:</label>
                         <select id="rola" name="rola" class="form-control" required>
-                            <option value="klient">Klient</option>
-                            <option value="administrator">Administrator</option>
+                            <?php
+                            if ($rolesResult->num_rows > 0) {
+                                while ($role = $rolesResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($role['id_type']) . '">' . htmlspecialchars($role['rola']) . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="stopien_jezdziecki">Stopień jeździecki:</label>
                         <select id="stopien_jezdziecki" name="stopien_jezdziecki" class="form-control" required>
-                            <option value="początkujący">Początkujący</option>
-                            <option value="średniozaawansowany">Średniozaawansowany</option>
-                            <option value="zaawansowany">Zaawansowany</option>
+                            <?php
+                            if ($skillsResult->num_rows > 0) {
+                                while ($skill = $skillsResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($skill['id_skill']) . '">' . htmlspecialchars($skill['stopien_jezdziecki']) . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -300,16 +318,29 @@ $result = $conn->query($sql);
                     <div class="form-group">
                         <label for="edit_rola">Rola:</label>
                         <select id="edit_rola" name="rola" class="form-control" required>
-                            <option value="administrator">Administrator</option>
-                            <option value="klient">Klient</option>
+                            <?php
+                            // Resetowanie wskaźnika rezultatu i ponowne pobranie ról
+                            $rolesResult->data_seek(0);
+                            if ($rolesResult->num_rows > 0) {
+                                while ($role = $rolesResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($role['id_type']) . '">' . htmlspecialchars($role['rola']) . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="edit_stopien_jezdziecki">Stopień jeździecki:</label>
                         <select id="edit_stopien_jezdziecki" name="stopien_jezdziecki" class="form-control" required>
-                            <option value="początkujący">Początkujący</option>
-                            <option value="średniozaawansowany">Średniozaawansowany</option>
-                            <option value="zaawansowany">Zaawansowany</option>
+                            <?php
+                            // Resetowanie wskaźnika rezultatu i ponowne pobranie stopni jeździeckich
+                            $skillsResult->data_seek(0);
+                            if ($skillsResult->num_rows > 0) {
+                                while ($skill = $skillsResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($skill['id_skill']) . '">' . htmlspecialchars($skill['stopien_jezdziecki']) . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <button type="submit" class="table-button">Zapisz zmiany</button>
@@ -317,6 +348,7 @@ $result = $conn->query($sql);
                 </form>
             </div>
         </div>
+
     </main>
     <script>
         document.getElementById('add-user-button').onclick = function () {

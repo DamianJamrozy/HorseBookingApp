@@ -40,23 +40,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Ustawienie sesji dla zalogowanego użytkownika
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_role'] = $user['rola'];
 
-            // Przekierowanie na odpowiednią stronę w zależności od roli użytkownika
-            switch ($user['rola']) {
-                case 'administrator':
-                    header("Location: ../sites/dashboard.php");
-                    exit(); // Zakończenie działania skryptu po przekierowaniu
-                case 'klient':
-                    header("Location: ../sites/dashboard.php");
-                    exit(); // Zakończenie działania skryptu po przekierowaniu
-                case 'trener':
-                    header("Location: ../sites/dashboard.php");
-                    exit(); // Zakończenie działania skryptu po przekierowaniu
-                default:
-                    // Jeśli rola użytkownika nie jest rozpoznawana, możesz przekierować go gdzieś indziej lub wyświetlić odpowiedni komunikat
-                    echo "Nieznana rola użytkownika.";
-                    break;
+            if ($user['rola'] == '1'){
+                $_SESSION['user_role'] = 'administrator';
+                header("Location: ../sites/dashboard.php");
+                exit(); // Zakończenie działania skryptu po przekierowaniu
+            }
+            elseif ($user['rola'] == '2'){
+                $_SESSION['user_role'] = 'trener';
+                header("Location: ../sites/dashboard.php");
+                exit(); // Zakończenie działania skryptu po przekierowaniu
+            }
+            elseif ($user['rola'] == '3'){
+                $_SESSION['user_role'] = 'klient';
+                header("Location: ../sites/dashboard.php");
+                exit(); // Zakończenie działania skryptu po przekierowaniu
+            }
+            else{
+                // Jeśli rola użytkownika nie jest rozpoznawana, możesz przekierować go gdzieś indziej lub wyświetlić odpowiedni komunikat
+                echo "Nieznana rola użytkownika.";
             }
         } else {
             // Nieprawidłowe hasło

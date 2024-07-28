@@ -9,7 +9,11 @@ $sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'u.id';
 $sortOrder = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
 // Pobranie listy trenerów z uwzględnieniem filtrów i sortowania
-$sql = "SELECT * FROM users u JOIN trainers tr ON u.id = tr.user_id WHERE 1=1";
+$sql = "SELECT u.*, ut.rola AS rola_nazwa, us.stopien_jezdziecki AS stopien_nazwa 
+        FROM users u 
+        INNER JOIN users_type ut ON u.rola = ut.id_type 
+        INNER JOIN users_skill us ON u.stopien_jezdziecki = us.id_skill 
+        WHERE ut.rola = 'trener'";
 
 if ($imieFilter) {
     $sql .= " AND u.imie LIKE '%" . $conn->real_escape_string($imieFilter) . "%'";
@@ -20,7 +24,7 @@ if ($nazwiskoFilter) {
 }
 
 if ($stopienFilter) {
-    $sql .= " AND u.stopien_jezdziecki = '" . $conn->real_escape_string($stopienFilter) . "'";
+    $sql .= " AND us.stopien_jezdziecki = '" . $conn->real_escape_string($stopienFilter) . "'";
 }
 
 $sql .= " ORDER BY " . $conn->real_escape_string($sortColumn) . " " . $conn->real_escape_string($sortOrder);
@@ -35,8 +39,8 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trenerzy</title>
-    <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../style/general.css">
+    <link rel="stylesheet" href="../style/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -65,13 +69,18 @@ $result = $conn->query($sql);
             <label for="nazwisko">Nazwisko:</label>
             <input type="text" name="nazwisko" id="nazwisko" value="<?= htmlspecialchars($nazwiskoFilter) ?>">
             
-            
             <label for="stopien_jezdziecki">Stopień jeździecki:</label>
             <select name="stopien_jezdziecki" id="stopien_jezdziecki">
                 <option value="">Wszystkie</option>
-                <option value="początkujący" <?= $stopienFilter == 'początkujący' ? 'selected' : '' ?>>Początkujący</option>
-                <option value="średniozaawansowany" <?= $stopienFilter == 'średniozaawansowany' ? 'selected' : '' ?>>Średniozaawansowany</option>
-                <option value="zaawansowany" <?= $stopienFilter == 'zaawansowany' ? 'selected' : '' ?>>Zaawansowany</option>
+                <?php
+                $skillsQuery = "SELECT * FROM users_skill";
+                $skillsResult = $conn->query($skillsQuery);
+                if ($skillsResult->num_rows > 0) {
+                    while ($skill = $skillsResult->fetch_assoc()) {
+                        echo '<option value="' . htmlspecialchars($skill['id_skill']) . '">' . htmlspecialchars($skill['stopien_jezdziecki']) . '</option>';
+                    }
+                }
+                ?>
             </select>
 
             <span style="display:none;">
@@ -112,11 +121,11 @@ $result = $conn->query($sql);
                             <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie trenera" width="100"></td>
                             <td><?php echo htmlspecialchars($row['imie']); ?></td>
                             <td><?php echo htmlspecialchars($row['nazwisko']); ?></td>
-                            <td><?php echo htmlspecialchars($row['stopien_jezdziecki']); ?></td>
+                            <td><?php echo htmlspecialchars($row['stopien_nazwa']); ?></td>
                             
-                            <?php if ($_SESSION['user_id'] == $row['user_id'] || $_SESSION['user_role'] == 'administrator'){ ?>
+                            <?php if ($_SESSION['user_id'] == $row['id'] || $_SESSION['user_role'] == 'administrator'){ ?>
                                 <td>
-                                <button class="edit-button table-button" data-id="<?php echo htmlspecialchars($row['user_id']); ?>"
+                                <button class="edit-button table-button" data-id="<?php echo htmlspecialchars($row['id']); ?>"
                                     onclick='showEditModal(<?php echo json_encode($row); ?>)'>
                                     Edytuj
                                 </button>
@@ -126,7 +135,7 @@ $result = $conn->query($sql);
                                 <td>
                                 <form method="post" action="../scripts/crud_trainers.php" style="display:inline;">
                                         <input type="hidden" name="delete_trainer" value="1">
-                                        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($row['user_id']); ?>">
+                                        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($row['id']); ?>">
                                         <button type="submit" class="table-button" onclick="return confirm('Czy na pewno chcesz usunąć tego trenera?')">Usuń</button>
                                     </form>
 
@@ -198,10 +207,16 @@ $result = $conn->query($sql);
                     </div>
                     <div class="form-group">
                         <label for="stopien_jezdziecki">Stopień jeździecki:</label>
-                        <select id="stopien_jezdziecki" name="stopien_jezdziecki" class="form-control">
-                            <option value="początkujący">Początkujący</option>
-                            <option value="średniozaawansowany">Średniozaawansowany</option>
-                            <option value="zaawansowany">Zaawansowany</option>
+                        <select id="stopien_jezdziecki" name="stopien_jezdziecki" class="form-control" required>
+                            <?php
+                            $skillsQuery = "SELECT * FROM users_skill";
+                            $skillsResult = $conn->query($skillsQuery);
+                            if ($skillsResult->num_rows > 0) {
+                                while ($skill = $skillsResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($skill['id_skill']) . '">' . htmlspecialchars($skill['stopien_jezdziecki']) . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -261,14 +276,19 @@ $result = $conn->query($sql);
                         <input type="file" name="trainer_image" id="edit-file-input" style="display: none;">
                         <img id="edit-preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
                     </div>
-                    <input type="hidden" id="edit-employee-id" name="employee_id" value="">
                 </div>
                 <div class="form-group">
                     <label for="edit_stopien_jezdziecki">Stopień jeździecki:</label>
-                    <select id="edit_stopien_jezdziecki" name="stopien_jezdziecki" class="form-control">
-                        <option value="początkujący">Początkujący</option>
-                        <option value="średniozaawansowany">Średniozaawansowany</option>
-                        <option value="zaawansowany">Zaawansowany</option>
+                    <select id="edit_stopien_jezdziecki" name="stopien_jezdziecki" class="form-control" required>
+                        <?php
+                        $skillsQuery = "SELECT * FROM users_skill";
+                        $skillsResult = $conn->query($skillsQuery);
+                        if ($skillsResult->num_rows > 0) {
+                            while ($skill = $skillsResult->fetch_assoc()) {
+                                echo '<option value="' . htmlspecialchars($skill['id_skill']) . '">' . htmlspecialchars($skill['stopien_jezdziecki']) . '</option>';
+                            }
+                        }
+                        ?>
                     </select>
                 </div>
                 <button type="submit" class="table-button flexend">Zapisz zmiany</button>
@@ -370,7 +390,7 @@ $result = $conn->query($sql);
         }
 
         function showEditModal(trainer) {
-            document.getElementById('edit_user_id').value = trainer.user_id;
+            document.getElementById('edit_user_id').value = trainer.id;
             document.getElementById('edit_imie').value = trainer.imie;
             document.getElementById('edit_nazwisko').value = trainer.nazwisko;
             document.getElementById('edit_email').value = trainer.email;

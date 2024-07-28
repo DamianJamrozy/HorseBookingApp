@@ -7,8 +7,12 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] !== 'klient')) {
     exit();
 }
 
-// Pobranie wszystkich użytkowników z bazy danych z uwzględnieniem filtrów i sortowania
-$sql = "SELECT * FROM users WHERE id = '" . $_SESSION['user_id'] . "'";
+// Pobranie danych użytkownika z bazy danych z uwzględnieniem filtrów i sortowania
+$sql = "SELECT u.*, us.stopien_jezdziecki AS stopien_nazwa, ut.rola AS rola_nazwa 
+        FROM users u 
+        INNER JOIN users_skill us ON u.stopien_jezdziecki = us.id_skill 
+        INNER JOIN users_type ut ON u.rola = ut.id_type 
+        WHERE u.id = '" . $_SESSION['user_id'] . "'";
 
 $result = $conn->query($sql);
 ?>
@@ -58,7 +62,7 @@ $result = $conn->query($sql);
                             echo '<td>' . htmlspecialchars($row['kod_pocztowy']) . '</td>';
                             echo '<td>' . htmlspecialchars($row['miasto']) . '</td>';
                             echo '<td>' . htmlspecialchars($row['telefon']) . '</td>';
-                            echo '<td>' . htmlspecialchars($row['stopien_jezdziecki']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['stopien_nazwa']) . '</td>';
                             echo '<td>';
                             echo '<button class="edit-button table-button" onclick="showEditModal(' . htmlspecialchars(json_encode($row)) . ')">Edytuj</button>';
                             echo '</td>';
@@ -78,7 +82,7 @@ $result = $conn->query($sql);
                 <span class="close" onclick="closeModal('edit-user-modal')">&times;</span>
                 <h3>Edytuj użytkownika</h3>
                 <form id="edit-user-form" method="post" action="../scripts/crud_users.php" enctype="multipart/form-data">
-                    <input type="hidden" name="edit_user">
+                    <input type="hidden" name="edit_user" value="1">
                     <input type="hidden" id="edit_user_id" name="id">
                     <div class="form-group">
                         <label for="edit_imie">Imię:</label>
@@ -119,16 +123,22 @@ $result = $conn->query($sql);
                             <input type="file" name="trainer_image" id="edit-file-input" style="display: none;">
                             <img id="edit-preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
                         </div>
-                        <input type="hidden" id="edit-employee-id" name="employee_id" value="">
                     </div>
                     <div class="form-group">
                         <label for="edit_stopien_jezdziecki">Stopień jeździecki:</label>
                         <select id="edit_stopien_jezdziecki" name="stopien_jezdziecki" class="form-control" required>
-                            <option value="początkujący">Początkujący</option>
-                            <option value="średniozaawansowany">Średniozaawansowany</option>
-                            <option value="zaawansowany">Zaawansowany</option>
+                            <?php
+                            $skillsQuery = "SELECT * FROM users_skill";
+                            $skillsResult = $conn->query($skillsQuery);
+                            if ($skillsResult->num_rows > 0) {
+                                while ($skill = $skillsResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($skill['id_skill']) . '">' . htmlspecialchars($skill['stopien_jezdziecki']) . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
+                    
                     <button type="submit" class="table-button">Zapisz zmiany</button>
                     <button type="button" class="table-button" onclick="closeModal('edit-user-modal')">Anuluj</button>
                 </form>
@@ -173,7 +183,6 @@ $result = $conn->query($sql);
         // Skrypt dla edycji zdjęć w modalach
         const editDropZone = document.getElementById('edit-drop-zone');
         const editFileInput = document.getElementById('edit-file-input');
-        const editEmployeeIdInput = document.getElementById('edit-employee-id');
         const editPreviewImage = document.getElementById('edit-preview-image');
 
         editDropZone.addEventListener('click', () => editFileInput.click());
@@ -181,7 +190,6 @@ $result = $conn->query($sql);
         editFileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 const file = e.target.files[0];
-                editEmployeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -207,7 +215,6 @@ $result = $conn->query($sql);
             if (e.dataTransfer.files.length > 0) {
                 const file = e.dataTransfer.files[0];
                 editFileInput.files = e.dataTransfer.files;
-                editEmployeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
