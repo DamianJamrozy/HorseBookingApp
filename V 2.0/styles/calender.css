@@ -1,0 +1,122 @@
+.sidebar a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  margin-left: 1rem;
+}
+
+a:hover {
+  text-decoration: none;
+  color: black;
+}
+
+.banner {
+  background-color: #1971c2;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 2rem;
+
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  font-family: "Edu AU VIC WA NT Hand", cursive;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.welcome-text {
+  flex: 1;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.logout {
+  margin-right: 2rem;
+}
+
+.logout img {
+  width: 8rem;
+  /* Dostosowanie szerokości obrazu wylogowania */
+  cursor: pointer;
+  /* Zmiana kursora na wskaźnik */
+}
+
+/* Calender Modal */
+
+.modal-content {
+  background-color: #fff0;
+  border: none;
+  color: #000;
+}
+
+.modal-content input {
+  width: 50%;
+  padding: 1rem;
+  margin-bottom: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1.5rem;
+
+  background-color: transparent;
+  border: none;
+
+  border-bottom: 1px solid #1971c2;
+
+  transition: all 0.5s ease-in-out;
+  font-size: 2rem;
+  margin-right: 2rem;
+}
+
+.modal-content select {
+  height: auto!important;
+  width: 50%;
+  padding: 1rem;
+  margin-bottom: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1.5rem;
+
+  background-color: transparent;
+  border: none;
+
+  border-bottom: 1px solid #1971c2;
+
+  transition: all 0.5s ease-in-out;
+  font-size: 2rem;
+  margin-right: 2rem;
+}
+
+.modal-content option {
+
+  background-color: transparent;
+  border: none;
+
+}
+
+.modal-body h4 {
+  font-size: 2rem;
+  padding: 2rem;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: none;
+  }
+}
+
+.modal-text-own {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  margin-bottom: 1.2rem;
+  align-items: center;
+}

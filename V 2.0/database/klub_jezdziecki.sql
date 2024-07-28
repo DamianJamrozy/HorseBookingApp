@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Lip 27, 2024 at 06:18 PM
+-- Generation Time: Lip 28, 2024 at 05:31 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -188,8 +188,17 @@ CREATE TABLE `reservations` (
   `trener_id` int(11) NOT NULL,
   `data_rezerwacji_od` datetime NOT NULL,
   `data_rezerwacji_do` datetime NOT NULL,
-  `reservation_status` enum('aktywna','anulowana') DEFAULT 'aktywna'
+  `reservation_status` enum('aktywna','anulowana','oczekujaca') DEFAULT 'aktywna'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`id`, `klient_id`, `kon_id`, `trener_id`, `data_rezerwacji_od`, `data_rezerwacji_do`, `reservation_status`) VALUES
+(15, 25, 1, 5, '2024-07-28 16:24:00', '2024-07-28 17:24:00', 'anulowana'),
+(16, 25, 1, 5, '2024-07-30 17:00:00', '2024-07-30 19:00:00', 'oczekujaca'),
+(17, 25, 3, 22, '2024-07-29 17:00:00', '2024-07-29 20:00:00', 'anulowana');
 
 -- --------------------------------------------------------
 
@@ -244,7 +253,7 @@ INSERT INTO `users` (`id`, `imie`, `nazwisko`, `email`, `ulica`, `nr_domu`, `kod
 (5, 'Adam', 'Nowakowski', 'adam.nowakowski@example.com', 'ul. Szkoleniowa 6', '6F', '50-600', 'Wrocław', '888999000', 'img/employee/trener2.jpg', '$2y$10$DvjVg3th8dhHA3qn8b0EbuPkvThYIaHyZBEjUEMWN6aSkVXX14qfS', 'trener', 'zaawansowany'),
 (6, 'Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', 'ul. Konna 7', '7G', '60-700', 'Katowice', '999000111', 'img/employee/trener3.jpg', '$2y$10$dqYlsTwyPUle87Bj7O3aFO85yovrh/sW9s5r2NgcDARaFskC646W6', 'trener', 'początkujący'),
 (22, 'Test', 'Trener', 'trener@trener', 'ul', '10', '33-333', 'Rzeszów', '555555555', 'img/users/klient1.jpg', '$2y$10$9QwGDQ8kY0SQcdHb9x2RGeJVtTtK6N4zJqcnsq7uflEo64eEA//Bm', 'trener', 'zaawansowany'),
-(25, 'Test', 'Klient', 'klient@klient', 'ul', '10', '33-333', 'Rzeszów', '666666666', 'img/users/66a37d1e2d2d9.jpg', '$2y$10$fhW.4E8q2UHTDRrCRHD8HOVcstvWt1U1som4zufdX7RUf1c/c4wze', '', 'początkujący');
+(25, 'Test', 'Klient', 'klient@klient', 'ul', '10', '33-333', 'Rzeszów', '666666666', 'img/users/66a37d1e2d2d9.jpg', '$2y$10$fhW.4E8q2UHTDRrCRHD8HOVcstvWt1U1som4zufdX7RUf1c/c4wze', 'klient', 'początkujący');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -371,7 +380,7 @@ ALTER TABLE `horses_type`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `trainers`
@@ -414,9 +423,9 @@ ALTER TABLE `horses`
 -- Constraints for table `reservations`
 --
 ALTER TABLE `reservations`
-  ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`klient_id`) REFERENCES `clients` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`kon_id`) REFERENCES `horses` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`trener_id`) REFERENCES `trainers` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `reservations_ibfk_4` FOREIGN KEY (`klient_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservations_ibfk_5` FOREIGN KEY (`trener_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `trainers`

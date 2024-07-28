@@ -21,12 +21,12 @@ if (strtotime($data_rezerwacji_od) === false || strtotime($data_rezerwacji_do) =
 $data_rezerwacji_od = date('Y-m-d H:i:s', strtotime($data_rezerwacji_od));
 $data_rezerwacji_do = date('Y-m-d H:i:s', strtotime($data_rezerwacji_do));
 
-$sql = "INSERT INTO reservations (klient_id, kon_id, trener_id, data_rezerwacji_od, data_rezerwacji_do, reservation_status) VALUES ('$klient_id', '$kon_id', '$trener_id', '$data_rezerwacji_od', '$data_rezerwacji_do', 'aktywna')";
+$sql = "INSERT INTO reservations (klient_id, kon_id, trener_id, data_rezerwacji_od, data_rezerwacji_do, reservation_status) VALUES ('$klient_id', '$kon_id', '$trener_id', '$data_rezerwacji_od', '$data_rezerwacji_do', 'oczekujaca')";
 
 if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
+    echo "alert('giiit');";
 } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "alert('" . $sql . "<br>" . $conn->error . "');";
 }
 
 $conn->close();
