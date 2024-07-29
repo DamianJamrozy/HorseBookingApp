@@ -112,7 +112,7 @@ if ($result->num_rows > 0) {
                                 <label>Klient</label>
                                 <select class="form-control" name="klient_id" id="klient_id">
                                     <?php
-                                    $clients = $conn->query("SELECT id, imie, nazwisko FROM users WHERE rola = 'klient'");
+                                    $clients = $conn->query("SELECT id, imie, nazwisko FROM users WHERE rola = '3'");
                                     while ($client = $clients->fetch_assoc()) {
                                         echo "<option value='" . $client['id'] . "'>" . $client['imie'] . " " . $client['nazwisko'] . "</option>";
                                     }
