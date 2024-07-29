@@ -32,7 +32,7 @@ if ($result->num_rows > 0) {
         if ($row['data_rezerwacji_od'] < date('Y-m-d H:i:s') && $row['reservation_status'] == 'aktywna') {
             $color = '#4dabf7';
         } elseif ($row['data_rezerwacji_od'] < date('Y-m-d H:i:s') && $row['reservation_status'] == 'anulowana') {
-            $color = '#5b5b5b';
+            $color = '#c7c7c7';
         }
 
         $events[] = array(
