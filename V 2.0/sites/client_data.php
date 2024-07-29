@@ -82,7 +82,7 @@ $result = $conn->query($sql);
                 <span class="close" onclick="closeModal('edit-user-modal')">&times;</span>
                 <h3>Edytuj użytkownika</h3>
                 <form id="edit-user-form" method="post" action="../scripts/crud_users.php" enctype="multipart/form-data">
-                    <input type="hidden" name="edit_user" value="1">
+                    <input type="hidden" name="edit_user_client" value="1">
                     <input type="hidden" id="edit_user_id" name="id">
                     <div class="form-group">
                         <label for="edit_imie">Imię:</label>

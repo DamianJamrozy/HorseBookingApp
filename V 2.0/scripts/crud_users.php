@@ -186,6 +186,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['error'] = $e->getMessage();
         }
 
+    } elseif (isset($_POST['edit_user_client'])) {
+        try {
+            $id = sanitize($conn, $_POST['id']);
+            $imie = sanitize($conn, $_POST['imie']);
+            $nazwisko = sanitize($conn, $_POST['nazwisko']);
+            $email = sanitize($conn, $_POST['email']);
+            $ulica = sanitize($conn, $_POST['ulica']);
+            $nr_domu = sanitize($conn, $_POST['nr_domu']);
+            $kod_pocztowy = sanitize($conn, $_POST['kod_pocztowy']);
+            $miasto = sanitize($conn, $_POST['miasto']);
+            $telefon = sanitize($conn, $_POST['telefon']);
+            $stopien_jezdziecki = sanitize($conn, $_POST['stopien_jezdziecki']);
+
+            // Przesyłanie nowego zdjęcia, jeśli zostało dołączone
+            $zdjecie = null;
+            if (isset($_FILES['trainer_image']) && $_FILES['trainer_image']['error'] === UPLOAD_ERR_OK) {
+                $zdjecie = uploadImage($_FILES['trainer_image'], $rola);
+                if ($zdjecie) {
+                    $zdjecie = 'img/' . ($rola == 1 || $rola == 2 ? 'employee/' : 'users/') . basename($zdjecie);
+
+                    // Usuń stare zdjęcie, jeśli istnieje
+                    $sql_select = "SELECT zdjecie FROM users WHERE id='$id'";
+                    $result = $conn->query($sql_select);
+                    if ($result && $result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
+                        $old_zdjecie = $row['zdjecie'];
+                        if ($old_zdjecie && file_exists(__DIR__ . '/../' . $old_zdjecie)) {
+                            unlink(__DIR__ . '/../' . $old_zdjecie);
+                        }
+                    }
+                }
+            }
+
+            // Przeniesienie istniejącego zdjęcia, jeśli rola została zmieniona
+            if ($rola) {
+                $sql_select = "SELECT zdjecie, rola FROM users WHERE id='$id'";
+                $result = $conn->query($sql_select);
+                if ($result && $result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    if ($row['rola'] != $rola && $row['zdjecie']) {
+                        $zdjecie = moveImage($row['zdjecie'], $rola);
+                    }
+                }
+            }
+
+            if ($zdjecie) {
+                $sql = "UPDATE users SET 
+                            imie='$imie',
+                            nazwisko='$nazwisko',
+                            email='$email',
+                            ulica='$ulica',
+                            nr_domu='$nr_domu',
+                            kod_pocztowy='$kod_pocztowy',
+                            miasto='$miasto',
+                            telefon='$telefon',
+                            zdjecie='$zdjecie',
+                            stopien_jezdziecki='$stopien_jezdziecki'
+                        WHERE id='$id'";
+            } else {
+                $sql = "UPDATE users SET 
+                            imie='$imie',
+                            nazwisko='$nazwisko',
+                            email='$email',
+                            ulica='$ulica',
+                            nr_domu='$nr_domu',
+                            kod_pocztowy='$kod_pocztowy',
+                            miasto='$miasto',
+                            telefon='$telefon',
+                            stopien_jezdziecki='$stopien_jezdziecki'
+                        WHERE id='$id'";
+            }
+
+            if ($conn->query($sql) === TRUE) {
+                $_SESSION['message'] = "Użytkownik zaktualizowany pomyślnie!";
+            } else {
+                throw new Exception("Błąd: " . $conn->error);
+            }
+
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
     } elseif (isset($_POST['delete_user'])) {
         try {
             $id = sanitize($conn, $_POST['id']);
