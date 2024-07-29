@@ -29,8 +29,10 @@ if ($result->num_rows > 0) {
         } elseif ($row['reservation_status'] == 'anulowana') {
             $color = '#f03e3e';
         }
-        if ($row['data_rezerwacji_od'] < date('Y-m-d H:i:s')) {
+        if ($row['data_rezerwacji_od'] < date('Y-m-d H:i:s') && $row['reservation_status'] == 'aktywna') {
             $color = '#4dabf7';
+        } elseif ($row['data_rezerwacji_od'] < date('Y-m-d H:i:s') && $row['reservation_status'] == 'anulowana') {
+            $color = '#5b5b5b';
         }
 
         $events[] = array(
