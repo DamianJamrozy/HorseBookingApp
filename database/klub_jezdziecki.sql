@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Lip 29, 2024 at 02:04 AM
+-- Generation Time: Lip 29, 2024 at 07:51 AM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -197,7 +197,7 @@ INSERT INTO `users` (`id`, `imie`, `nazwisko`, `email`, `ulica`, `nr_domu`, `kod
 (6, 'Katarzyna', 'Wójcik', 'katarzyna.wojcik@example.com', 'ul. Konna 7', '7G', '60-700', 'Katowice', '999000111', 'img/employee/trener3.jpg', '$2y$10$dqYlsTwyPUle87Bj7O3aFO85yovrh/sW9s5r2NgcDARaFskC646W6', 2, 1),
 (22, 'Test', 'Trener', 'trener@trener', 'ul', '10', '33-333', 'Rzeszów', '555555555', 'img/employee/66a6c967e5c1f.jpg', '$2y$10$9QwGDQ8kY0SQcdHb9x2RGeJVtTtK6N4zJqcnsq7uflEo64eEA//Bm', 2, 2),
 (25, 'Damian', 'Klient', 'klient@klient', 'ul', '10', '33-333', 'Rzeszów', '666666666', 'img/users/66a6dc26b5810.jpg', '$2y$10$fhW.4E8q2UHTDRrCRHD8HOVcstvWt1U1som4zufdX7RUf1c/c4wze', 3, 3),
-(37, 'Damian', 'Jamroży', 'dj113729@stud.ur.edu.pl', 'Rejtana', '16', '33-333', 'Rzeszów', '123456789', 'img/users/66a6dc5f8b63d.png', '$2y$10$aP.h1i9kMQgNl81LWU/8MenftO0Dq9HrW5ZVu9Z4sSDlV5Callo8O', 3, 3);
+(37, 'Damian', 'Jamroży', 'dj113729@stud.ur.edu.pl', 'Rejtana', '16', '33-333', 'Rzeszów', '123456789', 'img/users/66a72dc2b63be.jpg', '$2y$10$aP.h1i9kMQgNl81LWU/8MenftO0Dq9HrW5ZVu9Z4sSDlV5Callo8O', 3, 3);
 
 -- --------------------------------------------------------
 
