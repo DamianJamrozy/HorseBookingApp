@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stan_zdrowia = sanitize($conn, $_POST['stan_zdrowia']);
         $rodzaj_konia = sanitize($conn, $_POST['rodzaj_konia']);
         $opis = sanitize($conn, $_POST['opis']);
+
+        echo '$imie + $wiek + $rasa + $kolor + $wzrost + "$stan_zdrowia + $rodzaj_konia + $opis';
         
         // Sprawdzanie i przesyłanie zdjęcia, jeśli zostało dołączone
         $zdjecie = null;
@@ -30,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'webp');
             if (in_array($fileExtension, $allowedfileExtensions)) {
-                $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\img\horses\\';
+                $uploadFileDir = '..\img\horses\\';
                 $dest_path = $uploadFileDir . uniqid() . '.' . $fileExtension;
 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
@@ -85,15 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'webp');
             if (in_array($fileExtension, $allowedfileExtensions)) {
-                $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\img\horses\\';
+                $uploadFileDir = '..\img\horses\\';
                 $dest_path = $uploadFileDir . uniqid() . '.' . $fileExtension;
 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     // Przypisanie ścieżki nowego zdjęcia
                     $new_image_path = 'img/horses/' . basename($dest_path);
                     // Usunięcie starego zdjęcia, jeśli istnieje
-                    if ($current_image && file_exists('C:\xampp\htdocs\websites\HorseApp\\' . $current_image)) {
-                        unlink('C:\xampp\htdocs\websites\HorseApp\\' . $current_image);
+                    if ($current_image && file_exists('..\\' . $current_image)) {
+                        unlink('..\\' . $current_image);
                     }
                 } else {
                     $_SESSION['error'] = 'Błąd podczas przesyłania nowego zdjęcia. Upewnij się, że katalog docelowy jest zapisywalny.';
