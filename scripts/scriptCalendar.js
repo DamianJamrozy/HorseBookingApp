@@ -20,6 +20,8 @@ jQuery(document).ready(function() {
 			delete values['data_do'];
 			delete values['godzina_do'];
 
+			console.log(values);
+
 			$.ajax({
 					url: '../scripts/add_reservation.php',
 					type: 'POST',

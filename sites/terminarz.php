@@ -59,6 +59,7 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../styles/stylesCalendar.css">
     <link rel="stylesheet" type="text/css" href="../styles/calender.css">
     <link rel="stylesheet" type="text/css" href="../styles/general.css">
@@ -110,7 +111,7 @@ if ($result->num_rows > 0) {
                         <?php if ($user_role == 'administrator') { ?>
                             <div class="form-group">
                                 <label>Klient</label>
-                                <select class="form-control" name="klient_id" id="klient_id">
+                                <select class="form-control" name="klient_id" id="klient_id" required>
                                     <?php
                                     $clients = $conn->query("SELECT id, imie, nazwisko FROM users WHERE rola = '3'");
                                     while ($client = $clients->fetch_assoc()) {
@@ -119,32 +120,34 @@ if ($result->num_rows > 0) {
                                     ?>
                                 </select>
                             </div>
-                        <?php } ?>
+                        <?php } else {
+                            echo "<input type='hidden' name='klient_id' id='klient_id' value='$user_id' required />";
+                        } ?>
                         <div class="form-group">
                             <label>Data Od</label>
-                            <input type="date" class="form-control" name="data_od">
+                            <input type="date" class="form-control" name="data_od" required>
                         </div>
                         <div class="form-group">
                             <label>Godzina Od</label>
-                            <input type="time" class="form-control" name="godzina_od">
+                            <input type="time" class="form-control" name="godzina_od" required>
                         </div>
                         <div class="form-group">
                             <label>Data Do</label>
-                            <input type="date" class="form-control" name="data_do">
+                            <input type="date" class="form-control" name="data_do" required>
                         </div>
                         <div class="form-group">
                             <label>Godzina Do</label>
-                            <input type="time" class="form-control" name="godzina_do">
+                            <input type="time" class="form-control" name="godzina_do" required>
                         </div>
                         <div class="form-group">
                             <label>Koń</label>
-                            <select class="form-control" name="kon_id" id="kon_id">
+                            <select class="form-control" name="kon_id" id="kon_id" required>
                                 <!-- Konie będą załadowane przez JS -->
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Trener</label>
-                            <select class="form-control" name="trener_id" id="trener_id">
+                            <select class="form-control" name="trener_id" id="trener_id" required>
                                 <!-- Trenerzy będą załadowani przez JS -->
                             </select>
                         </div>
