@@ -49,15 +49,15 @@ $result = $conn->query($sql);
 
     <div class="trainers-data">
         <h2 class="title">Trenerzy</h2>
-        
+
         <!-- Filter and Sort Form -->
         <form id="filter-form" method="GET" action="">
             <label for="imie">Imię:</label>
             <input type="text" name="imie" id="imie" value="<?= htmlspecialchars($imieFilter) ?>">
-            
+
             <label for="nazwisko">Nazwisko:</label>
             <input type="text" name="nazwisko" id="nazwisko" value="<?= htmlspecialchars($nazwiskoFilter) ?>">
-            
+
             <label for="stopien_jezdziecki">Stopień jeździecki:</label>
             <select name="stopien_jezdziecki" id="stopien_jezdziecki">
                 <option value="">Wszystkie</option>
@@ -77,7 +77,8 @@ $result = $conn->query($sql);
                 <select name="sort" id="sort">
                     <option value="u.imie" <?= $sortColumn == 'u.imie' ? 'selected' : '' ?>>Imię</option>
                     <option value="u.nazwisko" <?= $sortColumn == 'u.nazwisko' ? 'selected' : '' ?>>Nazwisko</option>
-                    <option value="u.stopien_jezdziecki" <?= $sortColumn == 'u.stopien_jezdziecki' ? 'selected' : '' ?>>Stopień jeździecki</option>
+                    <option value="u.stopien_jezdziecki" <?= $sortColumn == 'u.stopien_jezdziecki' ? 'selected' : '' ?>>
+                        Stopień jeździecki</option>
                 </select>
 
                 <label for="order">Kolejność:</label>
@@ -107,25 +108,27 @@ $result = $conn->query($sql);
                 <?php if ($result->num_rows > 0): ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie trenera" width="100"></td>
+                            <td><img src="../<?php echo htmlspecialchars($row['zdjecie']); ?>" alt="Zdjęcie trenera"
+                                    width="100"></td>
                             <td><?php echo htmlspecialchars($row['imie']); ?></td>
                             <td><?php echo htmlspecialchars($row['nazwisko']); ?></td>
                             <td><?php echo htmlspecialchars($row['stopien_nazwa']); ?></td>
-                            
-                            <?php if ($_SESSION['user_id'] == $row['id'] || $_SESSION['user_role'] == 'administrator'){ ?>
+
+                            <?php if ($_SESSION['user_id'] == $row['id'] || $_SESSION['user_role'] == 'administrator') { ?>
                                 <td>
-                                <button class="edit-button table-button" data-id="<?php echo htmlspecialchars($row['id']); ?>"
-                                    onclick='showEditModal(<?php echo json_encode($row); ?>)'>
-                                    Edytuj
-                                </button>
+                                    <button class="edit-button table-button" data-id="<?php echo htmlspecialchars($row['id']); ?>"
+                                        onclick='showEditModal(<?php echo json_encode($row); ?>)'>
+                                        Edytuj
+                                    </button>
                                 </td>
                             <?php } ?>
                             <?php if ($_SESSION['user_role'] == 'administrator') { ?>
                                 <td>
-                                <form method="post" action="../scripts/crud_trainers.php" style="display:inline;">
+                                    <form method="post" action="../scripts/crud_trainers.php" style="display:inline;">
                                         <input type="hidden" name="delete_trainer" value="1">
                                         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($row['id']); ?>">
-                                        <button type="submit" class="table-button" onclick="return confirm('Czy na pewno chcesz usunąć tego trenera?')">Usuń</button>
+                                        <button type="submit" class="table-button"
+                                            onclick="return confirm('Czy na pewno chcesz usunąć tego trenera?')">Usuń</button>
                                     </form>
 
                                 </td>
@@ -139,7 +142,7 @@ $result = $conn->query($sql);
                 <?php endif; ?>
             </tbody>
         </table>
-        
+
         <?php if ($_SESSION['user_role'] == 'administrator') { ?>
             <button id="add-trainer-button" onclick="showAddModal()" class="table-button">Dodaj trenera</button>
         <?php } ?>
@@ -190,7 +193,8 @@ $result = $conn->query($sql);
                         <div class="drop-zone form-control" id="drop-zone">
                             Przeciągnij lub wybierz zdjęcie...
                             <input type="file" name="trainer_image" id="file-input" style="display: none;">
-                            <img id="preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+                            <img id="preview-image" src="" alt="Preview Image"
+                                style="display:none; width: 100%; height: auto; margin-top: 10px;">
                         </div>
                         <input type="hidden" id="employee-id" name="employee_id" value="">
                     </div>
@@ -260,10 +264,11 @@ $result = $conn->query($sql);
                 </div>
                 <div class="form-group">
                     <label for="edit_trainer_image">Zdjęcie:</label>
-                    <div class="drop-zone form-control" id="drop-zone">
+                    <div class="drop-zone form-control" id="edit-drop-zone">
                         Przeciągnij lub wybierz zdjęcie...
-                        <input type="file" name="trainer_image" id="file-input" style="display: none;">
-                        <img id="preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+                        <input type="file" name="trainer_image" id="edit-file-input" style="display: none;">
+                        <img id="edit-preview-image" src="" alt="Preview Image"
+                            style="display:none; width: 100%; height: auto; margin-top: 10px;">
                     </div>
                 </div>
                 <div class="form-group">
@@ -300,15 +305,15 @@ $result = $conn->query($sql);
                 stopien_jezdziecki: stopien,
                 sort: sort,
                 order: order
-            }, function(data) {
+            }, function (data) {
                 const tbody = $(data).find('#trainers-tbody').html();
                 $('#trainers-tbody').html(tbody);
             });
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#imie, #nazwisko, #stopien_jezdziecki, #sort, #order').change(updateTable);
-            $('.sort-link').click(function(e) {
+            $('.sort-link').click(function (e) {
                 e.preventDefault();
                 const column = $(this).data('column');
                 const currentOrder = $('#sort').val() === column ? $('#order').val() : 'ASC';
@@ -324,47 +329,49 @@ $result = $conn->query($sql);
         const employeeIdInput = document.getElementById('employee-id');
         const previewImage = document.getElementById('preview-image');
 
-        dropZone.addEventListener('click', () => fileInput.click());
+        if (dropZone != null && fileInput != null && employeeIdInput != null && previewImage != null) {
+            dropZone.addEventListener('click', () => fileInput.click());
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                const file = e.target.files[0];
-                employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
 
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImage.src = e.target.result;
-                    previewImage.style.display = 'block';
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        });
+            });
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                fileInput.files = e.dataTransfer.files;
-                employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    const file = e.dataTransfer.files[0];
+                    fileInput.files = e.dataTransfer.files;
+                    employeeIdInput.value = file.name.split('.')[0]; // Assuming file name contains the employee id
 
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImage.src = e.target.result;
-                    previewImage.style.display = 'block';
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        });
+            });
+        }
 
         function showAddModal() {
             document.getElementById('add-trainer-modal').style.display = 'block';
