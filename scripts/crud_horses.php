@@ -38,12 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $zdjecie = 'img/horses/' . basename($dest_path);
                 } else {
                     $_SESSION['error'] = 'Błąd podczas przesyłania zdjęcia. Upewnij się, że katalog docelowy jest zapisywalny.';
-                    header('Location: ../sites/dashboard.php?page=download_horses.php');
+                    header('Location: ../sites/dashboard.php?page=download_horse.php');
                     exit();
                 }
             } else {
                 $_SESSION['error'] = 'Nieprawidłowy format zdjęcia. Dozwolone formaty to: ' . implode(',', $allowedfileExtensions);
-                header('Location: ../sites/dashboard.php?page=download_horses.php');
+                header('Location: ../sites/dashboard.php?page=download_horse.php');
                 exit();
             }
         }
@@ -97,12 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 } else {
                     $_SESSION['error'] = 'Błąd podczas przesyłania nowego zdjęcia. Upewnij się, że katalog docelowy jest zapisywalny.';
-                    header('Location: ../sites/dashboard.php?page=download_horses.php');
+                    header('Location: ../sites/dashboard.php?page=download_horse.php');
                     exit();
                 }
             } else {
                 $_SESSION['error'] = 'Nieprawidłowy format zdjęcia. Dozwolone formaty to: ' . implode(',', $allowedfileExtensions);
-                header('Location: ../sites/dashboard.php?page=download_horses.php');
+                header('Location: ../sites/dashboard.php?page=download_horse.php');
                 exit();
             }
         }
