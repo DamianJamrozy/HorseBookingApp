@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'webp');
             if (in_array($fileExtension, $allowedfileExtensions)) {
-                $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\V 2.0\img\horses\\';
+                $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\img\horses\\';
                 $dest_path = $uploadFileDir . uniqid() . '.' . $fileExtension;
 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
@@ -85,15 +85,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $allowedfileExtensions = array('jpg', 'gif', 'png', 'webp');
             if (in_array($fileExtension, $allowedfileExtensions)) {
-                $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\V 2.0\img\horses\\';
+                $uploadFileDir = 'C:\xampp\htdocs\websites\HorseApp\img\horses\\';
                 $dest_path = $uploadFileDir . uniqid() . '.' . $fileExtension;
 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
                     // Przypisanie ścieżki nowego zdjęcia
                     $new_image_path = 'img/horses/' . basename($dest_path);
                     // Usunięcie starego zdjęcia, jeśli istnieje
-                    if ($current_image && file_exists('C:\xampp\htdocs\websites\HorseApp\V 2.0\\' . $current_image)) {
-                        unlink('C:\xampp\htdocs\websites\HorseApp\V 2.0\\' . $current_image);
+                    if ($current_image && file_exists('C:\xampp\htdocs\websites\HorseApp\\' . $current_image)) {
+                        unlink('C:\xampp\htdocs\websites\HorseApp\\' . $current_image);
                     }
                 } else {
                     $_SESSION['error'] = 'Błąd podczas przesyłania nowego zdjęcia. Upewnij się, że katalog docelowy jest zapisywalny.';
@@ -142,8 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql_delete_horse = "DELETE FROM horses WHERE id='$id'";
         if ($conn->query($sql_delete_horse) === TRUE) {
             // Usunięcie pliku zdjęcia, jeśli istnieje
-            if ($current_image && file_exists('C:\xampp\htdocs\websites\HorseApp\V 2.0\\' . $current_image)) {
-                unlink('C:\xampp\htdocs\websites\HorseApp\V 2.0\\' . $current_image);
+            if ($current_image && file_exists('C:\xampp\htdocs\websites\HorseApp\\' . $current_image)) {
+                unlink('C:\xampp\htdocs\websites\HorseApp\\' . $current_image);
             }
             $_SESSION['message'] = 'Koń został usunięty.';
         } else {
