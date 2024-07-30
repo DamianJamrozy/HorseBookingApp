@@ -39,8 +39,8 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trenerzy</title>
-    <link rel="stylesheet" href="../style/general.css">
-    <link rel="stylesheet" href="../style/styles.css">
+    <link rel="stylesheet" href="../styles/general.css">
+    <link rel="stylesheet" href="../styles/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -260,10 +260,10 @@ $result = $conn->query($sql);
                 </div>
                 <div class="form-group">
                     <label for="edit_trainer_image">Zdjęcie:</label>
-                    <div class="drop-zone form-control" id="edit-drop-zone">
+                    <div class="drop-zone form-control" id="drop-zone">
                         Przeciągnij lub wybierz zdjęcie...
-                        <input type="file" name="trainer_image" id="edit-file-input" style="display: none;">
-                        <img id="edit-preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
+                        <input type="file" name="trainer_image" id="file-input" style="display: none;">
+                        <img id="preview-image" src="" alt="Preview Image" style="display:none; width: 100%; height: auto; margin-top: 10px;">
                     </div>
                 </div>
                 <div class="form-group">
