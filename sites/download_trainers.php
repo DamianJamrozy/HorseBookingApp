@@ -46,17 +46,6 @@ $result = $conn->query($sql);
 
 <body>
 
-    <?php
-    if (isset($_SESSION['message'])) {
-        echo '<p class="message">' . $_SESSION['message'] . '</p>';
-        unset($_SESSION['message']);
-    }
-
-    if (isset($_SESSION['error'])) {
-        echo '<p class="error">' . $_SESSION['error'] . '</p>';
-        unset($_SESSION['error']);
-    }
-    ?>
 
     <div class="trainers-data">
         <h2 class="title">Trenerzy</h2>

@@ -79,18 +79,6 @@ while ($row = $rodzaj_result->fetch_assoc()) {
 </head>
 <body>
 
-    <?php
-    if (isset($_SESSION['message'])) {
-        echo '<p class="message">' . $_SESSION['message'] . '</p>';
-        unset($_SESSION['message']);
-    }
-
-    if (isset($_SESSION['error'])) {
-        echo '<p class="error">' . $_SESSION['error'] . '</p>';
-        unset($_SESSION['error']);
-    }
-    ?>
-
     <div class="horses-data">
         <h2 class="title">Lista Konii</h2>
         
